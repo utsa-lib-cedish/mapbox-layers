@@ -1,0 +1,36 @@
+.select-and-label {
+    position: absolute;
+    top: 0.7rem;
+    left: 0.7rem;
+    padding: 0.2rem;
+    display: flex;
+    flex-flow: column nowrap;
+    align-items: center;
+    z-index: 1;
+    font-family: Helvetica, "Helvetica Neue", sans-serif;
+    --select-border: #777;
+}
+
+.select-and-label::after {
+    content: "";
+    position: absolute;
+    right: 0.75rem;
+    top: 52%;
+    transform: translateY(50%);
+    width: 0.8em;
+    height: 0.5em;
+    background-color: var(--select-border);
+    clip-path: polygon(100% 0%, 0 0%, 50% 100%);
+    pointer-events: none;
+}
+
+.dropdown {
+    border: 1px solid var(--select-border);
+    border-radius: 0.25rem;
+    padding: 0.25rem 2rem 0.25rem 0.5rem;
+    font-size: 1rem;
+    line-height: 1.1;
+    cursor: pointer;
+    background-image: linear-gradient(to top, #f9f9f9, #fff 50%);
+    appearance: none;
+}
