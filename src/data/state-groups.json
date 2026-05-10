@@ -1,0 +1,1346 @@
+{
+  "01": [
+    {
+      "code": "211",
+      "name": "Náhuatl"
+    },
+    {
+      "code": "502",
+      "name": "Jñatrjo/Mazahua"
+    },
+    {
+      "code": "513",
+      "name": "Binnizá/Zapoteco"
+    },
+    {
+      "code": "501",
+      "name": "Otomí"
+    },
+    {
+      "code": "516",
+      "name": "Na savi/Ñuu Saavi/Mixteco"
+    },
+    {
+      "code": "602",
+      "name": "Mayaʾwiinik/Maya"
+    },
+    {
+      "code": "210",
+      "name": "Wixárika/Huichol"
+    },
+    {
+      "code": "701",
+      "name": "Totonaco"
+    },
+    {
+      "code": "801",
+      "name": "Purépecha/Pʾurhépecha/Pʾurhé/Tarasco"
+    },
+    {
+      "code": "901",
+      "name": "Ayuuk/Ayook/Mixe"
+    }
+  ],
+  "02": [
+    {
+      "code": "516",
+      "name": "Na savi/Ñuu Saavi/Mixteco"
+    },
+    {
+      "code": "513",
+      "name": "Binnizá/Zapoteco"
+    },
+    {
+      "code": "211",
+      "name": "Náhuatl"
+    },
+    {
+      "code": "518",
+      "name": "Triqui"
+    },
+    {
+      "code": "801",
+      "name": "Purépecha/Pʾurhépecha/Pʾurhé/Tarasco"
+    },
+    {
+      "code": "607",
+      "name": "Tsotsil"
+    },
+    {
+      "code": "606",
+      "name": "Tseltal"
+    },
+    {
+      "code": "901",
+      "name": "Ayuuk/Ayook/Mixe"
+    },
+    {
+      "code": "208",
+      "name": "Yoreme/Mayo"
+    },
+    {
+      "code": "207",
+      "name": "Yoeme/Yaqui"
+    }
+  ],
+  "03": [
+    {
+      "code": "211",
+      "name": "Náhuatl"
+    },
+    {
+      "code": "516",
+      "name": "Na savi/Ñuu Saavi/Mixteco"
+    },
+    {
+      "code": "513",
+      "name": "Binnizá/Zapoteco"
+    },
+    {
+      "code": "512",
+      "name": "Popoloca"
+    },
+    {
+      "code": "509",
+      "name": "Mazateco"
+    },
+    {
+      "code": "508",
+      "name": "Meʾphaa/Tlapaneco"
+    },
+    {
+      "code": "515",
+      "name": "Nn'anncue/Amuzgo"
+    },
+    {
+      "code": "606",
+      "name": "Tseltal"
+    },
+    {
+      "code": "602",
+      "name": "Mayaʾwiinik/Maya"
+    },
+    {
+      "code": "901",
+      "name": "Ayuuk/Ayook/Mixe"
+    }
+  ],
+  "04": [
+    {
+      "code": "604",
+      "name": "Ch'ol"
+    },
+    {
+      "code": "606",
+      "name": "Tseltal"
+    },
+    {
+      "code": "602",
+      "name": "Mayaʾwiinik/Maya"
+    },
+    {
+      "code": "607",
+      "name": "Tsotsil"
+    },
+    {
+      "code": "513",
+      "name": "Binnizá/Zapoteco"
+    },
+    {
+      "code": "211",
+      "name": "Náhuatl"
+    },
+    {
+      "code": "701",
+      "name": "Totonaco"
+    },
+    {
+      "code": "907",
+      "name": "Zoque"
+    },
+    {
+      "code": "614",
+      "name": "Q'eqchi'"
+    },
+    {
+      "code": "608",
+      "name": "Q'anjob'al"
+    }
+  ],
+  "05": [
+    {
+      "code": "211",
+      "name": "Náhuatl"
+    },
+    {
+      "code": "513",
+      "name": "Binnizá/Zapoteco"
+    },
+    {
+      "code": "502",
+      "name": "Jñatrjo/Mazahua"
+    },
+    {
+      "code": "601",
+      "name": "Teenek/Huasteco"
+    },
+    {
+      "code": "701",
+      "name": "Totonaco"
+    },
+    {
+      "code": "602",
+      "name": "Mayaʾwiinik/Maya"
+    },
+    {
+      "code": "501",
+      "name": "Otomí"
+    },
+    {
+      "code": "516",
+      "name": "Na savi/Ñuu Saavi/Mixteco"
+    },
+    {
+      "code": "901",
+      "name": "Ayuuk/Ayook/Mixe"
+    },
+    {
+      "code": "205",
+      "name": "Rarámuri/Ralamuli/Tarahumara"
+    }
+  ],
+  "06": [
+    {
+      "code": "516",
+      "name": "Na savi/Ñuu Saavi/Mixteco"
+    },
+    {
+      "code": "211",
+      "name": "Náhuatl"
+    },
+    {
+      "code": "801",
+      "name": "Purépecha/Pʾurhépecha/Pʾurhé/Tarasco"
+    },
+    {
+      "code": "513",
+      "name": "Binnizá/Zapoteco"
+    },
+    {
+      "code": "515",
+      "name": "Nn'anncue/Amuzgo"
+    },
+    {
+      "code": "502",
+      "name": "Jñatrjo/Mazahua"
+    },
+    {
+      "code": "602",
+      "name": "Mayaʾwiinik/Maya"
+    },
+    {
+      "code": "501",
+      "name": "Otomí"
+    },
+    {
+      "code": "901",
+      "name": "Ayuuk/Ayook/Mixe"
+    },
+    {
+      "code": "607",
+      "name": "Tsotsil"
+    }
+  ],
+  "07": [
+    {
+      "code": "607",
+      "name": "Tsotsil"
+    },
+    {
+      "code": "606",
+      "name": "Tseltal"
+    },
+    {
+      "code": "604",
+      "name": "Ch'ol"
+    },
+    {
+      "code": "907",
+      "name": "Zoque"
+    },
+    {
+      "code": "613",
+      "name": "Tojolabal"
+    },
+    {
+      "code": "618",
+      "name": "Winaq qo’/Mam"
+    },
+    {
+      "code": "513",
+      "name": "Binnizá/Zapoteco"
+    },
+    {
+      "code": "608",
+      "name": "Q'anjob'al"
+    },
+    {
+      "code": "609",
+      "name": "Akateko"
+    },
+    {
+      "code": "211",
+      "name": "Náhuatl"
+    }
+  ],
+  "08": [
+    {
+      "code": "205",
+      "name": "Rarámuri/Ralamuli/Tarahumara"
+    },
+    {
+      "code": "516",
+      "name": "Na savi/Ñuu Saavi/Mixteco"
+    },
+    {
+      "code": "203",
+      "name": "Oʾdame/Tepehuano del norte"
+    },
+    {
+      "code": "211",
+      "name": "Náhuatl"
+    },
+    {
+      "code": "507",
+      "name": "Chinanteco"
+    },
+    {
+      "code": "502",
+      "name": "Jñatrjo/Mazahua"
+    },
+    {
+      "code": "513",
+      "name": "Binnizá/Zapoteco"
+    },
+    {
+      "code": "901",
+      "name": "Ayuuk/Ayook/Mixe"
+    },
+    {
+      "code": "509",
+      "name": "Mazateco"
+    },
+    {
+      "code": "602",
+      "name": "Mayaʾwiinik/Maya"
+    }
+  ],
+  "09": [
+    {
+      "code": "211",
+      "name": "Náhuatl"
+    },
+    {
+      "code": "516",
+      "name": "Na savi/Ñuu Saavi/Mixteco"
+    },
+    {
+      "code": "501",
+      "name": "Otomí"
+    },
+    {
+      "code": "509",
+      "name": "Mazateco"
+    },
+    {
+      "code": "513",
+      "name": "Binnizá/Zapoteco"
+    },
+    {
+      "code": "502",
+      "name": "Jñatrjo/Mazahua"
+    },
+    {
+      "code": "701",
+      "name": "Totonaco"
+    },
+    {
+      "code": "901",
+      "name": "Ayuuk/Ayook/Mixe"
+    },
+    {
+      "code": "507",
+      "name": "Chinanteco"
+    },
+    {
+      "code": "508",
+      "name": "Meʾphaa/Tlapaneco"
+    }
+  ],
+  "10": [
+    {
+      "code": "204",
+      "name": "Oʾdam/Tepehuano del sur"
+    },
+    {
+      "code": "211",
+      "name": "Náhuatl"
+    },
+    {
+      "code": "205",
+      "name": "Rarámuri/Ralamuli/Tarahumara"
+    },
+    {
+      "code": "502",
+      "name": "Jñatrjo/Mazahua"
+    },
+    {
+      "code": "210",
+      "name": "Wixárika/Huichol"
+    },
+    {
+      "code": "501",
+      "name": "Otomí"
+    },
+    {
+      "code": "513",
+      "name": "Binnizá/Zapoteco"
+    },
+    {
+      "code": "516",
+      "name": "Na savi/Ñuu Saavi/Mixteco"
+    },
+    {
+      "code": "701",
+      "name": "Totonaco"
+    },
+    {
+      "code": "203",
+      "name": "Oʾdame/Tepehuano del norte"
+    }
+  ],
+  "11": [
+    {
+      "code": "211",
+      "name": "Náhuatl"
+    },
+    {
+      "code": "501",
+      "name": "Otomí"
+    },
+    {
+      "code": "502",
+      "name": "Jñatrjo/Mazahua"
+    },
+    {
+      "code": "901",
+      "name": "Ayuuk/Ayook/Mixe"
+    },
+    {
+      "code": "516",
+      "name": "Na savi/Ñuu Saavi/Mixteco"
+    },
+    {
+      "code": "801",
+      "name": "Purépecha/Pʾurhépecha/Pʾurhé/Tarasco"
+    },
+    {
+      "code": "513",
+      "name": "Binnizá/Zapoteco"
+    },
+    {
+      "code": "602",
+      "name": "Mayaʾwiinik/Maya"
+    },
+    {
+      "code": "701",
+      "name": "Totonaco"
+    },
+    {
+      "code": "507",
+      "name": "Chinanteco"
+    }
+  ],
+  "12": [
+    {
+      "code": "508",
+      "name": "Meʾphaa/Tlapaneco"
+    },
+    {
+      "code": "211",
+      "name": "Náhuatl"
+    },
+    {
+      "code": "516",
+      "name": "Na savi/Ñuu Saavi/Mixteco"
+    },
+    {
+      "code": "515",
+      "name": "Nn'anncue/Amuzgo"
+    },
+    {
+      "code": "513",
+      "name": "Binnizá/Zapoteco"
+    },
+    {
+      "code": "502",
+      "name": "Jñatrjo/Mazahua"
+    },
+    {
+      "code": "701",
+      "name": "Totonaco"
+    },
+    {
+      "code": "501",
+      "name": "Otomí"
+    },
+    {
+      "code": "602",
+      "name": "Mayaʾwiinik/Maya"
+    },
+    {
+      "code": "509",
+      "name": "Mazateco"
+    }
+  ],
+  "13": [
+    {
+      "code": "211",
+      "name": "Náhuatl"
+    },
+    {
+      "code": "501",
+      "name": "Otomí"
+    },
+    {
+      "code": "701",
+      "name": "Totonaco"
+    },
+    {
+      "code": "513",
+      "name": "Binnizá/Zapoteco"
+    },
+    {
+      "code": "516",
+      "name": "Na savi/Ñuu Saavi/Mixteco"
+    },
+    {
+      "code": "502",
+      "name": "Jñatrjo/Mazahua"
+    },
+    {
+      "code": "601",
+      "name": "Teenek/Huasteco"
+    },
+    {
+      "code": "509",
+      "name": "Mazateco"
+    },
+    {
+      "code": "702",
+      "name": "Tepehua"
+    },
+    {
+      "code": "901",
+      "name": "Ayuuk/Ayook/Mixe"
+    }
+  ],
+  "14": [
+    {
+      "code": "211",
+      "name": "Náhuatl"
+    },
+    {
+      "code": "210",
+      "name": "Wixárika/Huichol"
+    },
+    {
+      "code": "801",
+      "name": "Purépecha/Pʾurhépecha/Pʾurhé/Tarasco"
+    },
+    {
+      "code": "516",
+      "name": "Na savi/Ñuu Saavi/Mixteco"
+    },
+    {
+      "code": "513",
+      "name": "Binnizá/Zapoteco"
+    },
+    {
+      "code": "501",
+      "name": "Otomí"
+    },
+    {
+      "code": "601",
+      "name": "Teenek/Huasteco"
+    },
+    {
+      "code": "502",
+      "name": "Jñatrjo/Mazahua"
+    },
+    {
+      "code": "607",
+      "name": "Tsotsil"
+    },
+    {
+      "code": "701",
+      "name": "Totonaco"
+    }
+  ],
+  "15": [
+    {
+      "code": "211",
+      "name": "Náhuatl"
+    },
+    {
+      "code": "501",
+      "name": "Otomí"
+    },
+    {
+      "code": "516",
+      "name": "Na savi/Ñuu Saavi/Mixteco"
+    },
+    {
+      "code": "502",
+      "name": "Jñatrjo/Mazahua"
+    },
+    {
+      "code": "509",
+      "name": "Mazateco"
+    },
+    {
+      "code": "513",
+      "name": "Binnizá/Zapoteco"
+    },
+    {
+      "code": "701",
+      "name": "Totonaco"
+    },
+    {
+      "code": "901",
+      "name": "Ayuuk/Ayook/Mixe"
+    },
+    {
+      "code": "507",
+      "name": "Chinanteco"
+    },
+    {
+      "code": "508",
+      "name": "Meʾphaa/Tlapaneco"
+    }
+  ],
+  "16": [
+    {
+      "code": "801",
+      "name": "Purépecha/Pʾurhépecha/Pʾurhé/Tarasco"
+    },
+    {
+      "code": "211",
+      "name": "Náhuatl"
+    },
+    {
+      "code": "516",
+      "name": "Na savi/Ñuu Saavi/Mixteco"
+    },
+    {
+      "code": "502",
+      "name": "Jñatrjo/Mazahua"
+    },
+    {
+      "code": "501",
+      "name": "Otomí"
+    },
+    {
+      "code": "606",
+      "name": "Tseltal"
+    },
+    {
+      "code": "508",
+      "name": "Meʾphaa/Tlapaneco"
+    },
+    {
+      "code": "513",
+      "name": "Binnizá/Zapoteco"
+    },
+    {
+      "code": "515",
+      "name": "Nn'anncue/Amuzgo"
+    },
+    {
+      "code": "901",
+      "name": "Ayuuk/Ayook/Mixe"
+    }
+  ],
+  "17": [
+    {
+      "code": "211",
+      "name": "Náhuatl"
+    },
+    {
+      "code": "516",
+      "name": "Na savi/Ñuu Saavi/Mixteco"
+    },
+    {
+      "code": "508",
+      "name": "Meʾphaa/Tlapaneco"
+    },
+    {
+      "code": "513",
+      "name": "Binnizá/Zapoteco"
+    },
+    {
+      "code": "501",
+      "name": "Otomí"
+    },
+    {
+      "code": "502",
+      "name": "Jñatrjo/Mazahua"
+    },
+    {
+      "code": "509",
+      "name": "Mazateco"
+    },
+    {
+      "code": "701",
+      "name": "Totonaco"
+    },
+    {
+      "code": "901",
+      "name": "Ayuuk/Ayook/Mixe"
+    },
+    {
+      "code": "602",
+      "name": "Mayaʾwiinik/Maya"
+    }
+  ],
+  "18": [
+    {
+      "code": "210",
+      "name": "Wixárika/Huichol"
+    },
+    {
+      "code": "209",
+      "name": "Náayari/Cora"
+    },
+    {
+      "code": "211",
+      "name": "Náhuatl"
+    },
+    {
+      "code": "204",
+      "name": "Oʾdam/Tepehuano del sur"
+    },
+    {
+      "code": "513",
+      "name": "Binnizá/Zapoteco"
+    },
+    {
+      "code": "502",
+      "name": "Jñatrjo/Mazahua"
+    },
+    {
+      "code": "607",
+      "name": "Tsotsil"
+    },
+    {
+      "code": "516",
+      "name": "Na savi/Ñuu Saavi/Mixteco"
+    },
+    {
+      "code": "801",
+      "name": "Purépecha/Pʾurhépecha/Pʾurhé/Tarasco"
+    },
+    {
+      "code": "508",
+      "name": "Meʾphaa/Tlapaneco"
+    }
+  ],
+  "19": [
+    {
+      "code": "211",
+      "name": "Náhuatl"
+    },
+    {
+      "code": "601",
+      "name": "Teenek/Huasteco"
+    },
+    {
+      "code": "501",
+      "name": "Otomí"
+    },
+    {
+      "code": "513",
+      "name": "Binnizá/Zapoteco"
+    },
+    {
+      "code": "701",
+      "name": "Totonaco"
+    },
+    {
+      "code": "606",
+      "name": "Tseltal"
+    },
+    {
+      "code": "516",
+      "name": "Na savi/Ñuu Saavi/Mixteco"
+    },
+    {
+      "code": "604",
+      "name": "Ch'ol"
+    },
+    {
+      "code": "509",
+      "name": "Mazateco"
+    },
+    {
+      "code": "901",
+      "name": "Ayuuk/Ayook/Mixe"
+    }
+  ],
+  "20": [
+    {
+      "code": "513",
+      "name": "Binnizá/Zapoteco"
+    },
+    {
+      "code": "516",
+      "name": "Na savi/Ñuu Saavi/Mixteco"
+    },
+    {
+      "code": "901",
+      "name": "Ayuuk/Ayook/Mixe"
+    },
+    {
+      "code": "507",
+      "name": "Chinanteco"
+    },
+    {
+      "code": "509",
+      "name": "Mazateco"
+    },
+    {
+      "code": "211",
+      "name": "Náhuatl"
+    },
+    {
+      "code": "514",
+      "name": "Chatino"
+    },
+    {
+      "code": "907",
+      "name": "Zoque"
+    },
+    {
+      "code": "518",
+      "name": "Triqui"
+    },
+    {
+      "code": "517",
+      "name": "Cuicateco"
+    }
+  ],
+  "21": [
+    {
+      "code": "211",
+      "name": "Náhuatl"
+    },
+    {
+      "code": "701",
+      "name": "Totonaco"
+    },
+    {
+      "code": "509",
+      "name": "Mazateco"
+    },
+    {
+      "code": "516",
+      "name": "Na savi/Ñuu Saavi/Mixteco"
+    },
+    {
+      "code": "513",
+      "name": "Binnizá/Zapoteco"
+    },
+    {
+      "code": "512",
+      "name": "Popoloca"
+    },
+    {
+      "code": "501",
+      "name": "Otomí"
+    },
+    {
+      "code": "517",
+      "name": "Cuicateco"
+    },
+    {
+      "code": "508",
+      "name": "Meʾphaa/Tlapaneco"
+    },
+    {
+      "code": "507",
+      "name": "Chinanteco"
+    }
+  ],
+  "22": [
+    {
+      "code": "211",
+      "name": "Náhuatl"
+    },
+    {
+      "code": "501",
+      "name": "Otomí"
+    },
+    {
+      "code": "502",
+      "name": "Jñatrjo/Mazahua"
+    },
+    {
+      "code": "513",
+      "name": "Binnizá/Zapoteco"
+    },
+    {
+      "code": "516",
+      "name": "Na savi/Ñuu Saavi/Mixteco"
+    },
+    {
+      "code": "701",
+      "name": "Totonaco"
+    },
+    {
+      "code": "901",
+      "name": "Ayuuk/Ayook/Mixe"
+    },
+    {
+      "code": "801",
+      "name": "Purépecha/Pʾurhépecha/Pʾurhé/Tarasco"
+    },
+    {
+      "code": "507",
+      "name": "Chinanteco"
+    },
+    {
+      "code": "602",
+      "name": "Mayaʾwiinik/Maya"
+    }
+  ],
+  "23": [
+    {
+      "code": "602",
+      "name": "Mayaʾwiinik/Maya"
+    },
+    {
+      "code": "606",
+      "name": "Tseltal"
+    },
+    {
+      "code": "604",
+      "name": "Ch'ol"
+    },
+    {
+      "code": "607",
+      "name": "Tsotsil"
+    },
+    {
+      "code": "211",
+      "name": "Náhuatl"
+    },
+    {
+      "code": "907",
+      "name": "Zoque"
+    },
+    {
+      "code": "513",
+      "name": "Binnizá/Zapoteco"
+    },
+    {
+      "code": "618",
+      "name": "Winaq qo’/Mam"
+    },
+    {
+      "code": "608",
+      "name": "Q'anjob'al"
+    },
+    {
+      "code": "901",
+      "name": "Ayuuk/Ayook/Mixe"
+    }
+  ],
+  "24": [
+    {
+      "code": "211",
+      "name": "Náhuatl"
+    },
+    {
+      "code": "601",
+      "name": "Teenek/Huasteco"
+    },
+    {
+      "code": "505",
+      "name": "Xiʾui/Pame"
+    },
+    {
+      "code": "501",
+      "name": "Otomí"
+    },
+    {
+      "code": "502",
+      "name": "Jñatrjo/Mazahua"
+    },
+    {
+      "code": "901",
+      "name": "Ayuuk/Ayook/Mixe"
+    },
+    {
+      "code": "513",
+      "name": "Binnizá/Zapoteco"
+    },
+    {
+      "code": "516",
+      "name": "Na savi/Ñuu Saavi/Mixteco"
+    },
+    {
+      "code": "701",
+      "name": "Totonaco"
+    },
+    {
+      "code": "602",
+      "name": "Mayaʾwiinik/Maya"
+    }
+  ],
+  "25": [
+    {
+      "code": "211",
+      "name": "Náhuatl"
+    },
+    {
+      "code": "516",
+      "name": "Na savi/Ñuu Saavi/Mixteco"
+    },
+    {
+      "code": "205",
+      "name": "Rarámuri/Ralamuli/Tarahumara"
+    },
+    {
+      "code": "513",
+      "name": "Binnizá/Zapoteco"
+    },
+    {
+      "code": "508",
+      "name": "Meʾphaa/Tlapaneco"
+    },
+    {
+      "code": "208",
+      "name": "Yoreme/Mayo"
+    },
+    {
+      "code": "204",
+      "name": "Oʾdam/Tepehuano del sur"
+    },
+    {
+      "code": "515",
+      "name": "Nn'anncue/Amuzgo"
+    },
+    {
+      "code": "606",
+      "name": "Tseltal"
+    },
+    {
+      "code": "509",
+      "name": "Mazateco"
+    }
+  ],
+  "26": [
+    {
+      "code": "208",
+      "name": "Yoreme/Mayo"
+    },
+    {
+      "code": "516",
+      "name": "Na savi/Ñuu Saavi/Mixteco"
+    },
+    {
+      "code": "513",
+      "name": "Binnizá/Zapoteco"
+    },
+    {
+      "code": "211",
+      "name": "Náhuatl"
+    },
+    {
+      "code": "207",
+      "name": "Yoeme/Yaqui"
+    },
+    {
+      "code": "518",
+      "name": "Triqui"
+    },
+    {
+      "code": "606",
+      "name": "Tseltal"
+    },
+    {
+      "code": "205",
+      "name": "Rarámuri/Ralamuli/Tarahumara"
+    },
+    {
+      "code": "607",
+      "name": "Tsotsil"
+    },
+    {
+      "code": "206",
+      "name": "Warihó/Macurawe/Guarijío"
+    }
+  ],
+  "27": [
+    {
+      "code": "604",
+      "name": "Ch'ol"
+    },
+    {
+      "code": "605",
+      "name": "Yoko t'anob/Yoko tʾan/Chontal de Tabasco"
+    },
+    {
+      "code": "606",
+      "name": "Tseltal"
+    },
+    {
+      "code": "607",
+      "name": "Tsotsil"
+    },
+    {
+      "code": "602",
+      "name": "Mayaʾwiinik/Maya"
+    },
+    {
+      "code": "907",
+      "name": "Zoque"
+    },
+    {
+      "code": "513",
+      "name": "Binnizá/Zapoteco"
+    },
+    {
+      "code": "211",
+      "name": "Náhuatl"
+    },
+    {
+      "code": "516",
+      "name": "Na savi/Ñuu Saavi/Mixteco"
+    },
+    {
+      "code": "701",
+      "name": "Totonaco"
+    }
+  ],
+  "28": [
+    {
+      "code": "211",
+      "name": "Náhuatl"
+    },
+    {
+      "code": "601",
+      "name": "Teenek/Huasteco"
+    },
+    {
+      "code": "701",
+      "name": "Totonaco"
+    },
+    {
+      "code": "513",
+      "name": "Binnizá/Zapoteco"
+    },
+    {
+      "code": "502",
+      "name": "Jñatrjo/Mazahua"
+    },
+    {
+      "code": "501",
+      "name": "Otomí"
+    },
+    {
+      "code": "602",
+      "name": "Mayaʾwiinik/Maya"
+    },
+    {
+      "code": "516",
+      "name": "Na savi/Ñuu Saavi/Mixteco"
+    },
+    {
+      "code": "507",
+      "name": "Chinanteco"
+    },
+    {
+      "code": "607",
+      "name": "Tsotsil"
+    }
+  ],
+  "29": [
+    {
+      "code": "211",
+      "name": "Náhuatl"
+    },
+    {
+      "code": "701",
+      "name": "Totonaco"
+    },
+    {
+      "code": "509",
+      "name": "Mazateco"
+    },
+    {
+      "code": "513",
+      "name": "Binnizá/Zapoteco"
+    },
+    {
+      "code": "501",
+      "name": "Otomí"
+    },
+    {
+      "code": "516",
+      "name": "Na savi/Ñuu Saavi/Mixteco"
+    },
+    {
+      "code": "901",
+      "name": "Ayuuk/Ayook/Mixe"
+    },
+    {
+      "code": "602",
+      "name": "Mayaʾwiinik/Maya"
+    },
+    {
+      "code": "606",
+      "name": "Tseltal"
+    },
+    {
+      "code": "502",
+      "name": "Jñatrjo/Mazahua"
+    }
+  ],
+  "30": [
+    {
+      "code": "211",
+      "name": "Náhuatl"
+    },
+    {
+      "code": "513",
+      "name": "Binnizá/Zapoteco"
+    },
+    {
+      "code": "509",
+      "name": "Mazateco"
+    },
+    {
+      "code": "701",
+      "name": "Totonaco"
+    },
+    {
+      "code": "507",
+      "name": "Chinanteco"
+    },
+    {
+      "code": "601",
+      "name": "Teenek/Huasteco"
+    },
+    {
+      "code": "516",
+      "name": "Na savi/Ñuu Saavi/Mixteco"
+    },
+    {
+      "code": "907",
+      "name": "Zoque"
+    },
+    {
+      "code": "906",
+      "name": "Popoluca de la Sierra"
+    },
+    {
+      "code": "901",
+      "name": "Ayuuk/Ayook/Mixe"
+    }
+  ],
+  "31": [
+    {
+      "code": "602",
+      "name": "Mayaʾwiinik/Maya"
+    },
+    {
+      "code": "604",
+      "name": "Ch'ol"
+    },
+    {
+      "code": "606",
+      "name": "Tseltal"
+    },
+    {
+      "code": "513",
+      "name": "Binnizá/Zapoteco"
+    },
+    {
+      "code": "211",
+      "name": "Náhuatl"
+    },
+    {
+      "code": "901",
+      "name": "Ayuuk/Ayook/Mixe"
+    },
+    {
+      "code": "607",
+      "name": "Tsotsil"
+    },
+    {
+      "code": "907",
+      "name": "Zoque"
+    },
+    {
+      "code": "516",
+      "name": "Na savi/Ñuu Saavi/Mixteco"
+    },
+    {
+      "code": "501",
+      "name": "Otomí"
+    }
+  ],
+  "32": [
+    {
+      "code": "210",
+      "name": "Wixárika/Huichol"
+    },
+    {
+      "code": "211",
+      "name": "Náhuatl"
+    },
+    {
+      "code": "204",
+      "name": "Oʾdam/Tepehuano del sur"
+    },
+    {
+      "code": "502",
+      "name": "Jñatrjo/Mazahua"
+    },
+    {
+      "code": "501",
+      "name": "Otomí"
+    },
+    {
+      "code": "801",
+      "name": "Purépecha/Pʾurhépecha/Pʾurhé/Tarasco"
+    },
+    {
+      "code": "513",
+      "name": "Binnizá/Zapoteco"
+    },
+    {
+      "code": "601",
+      "name": "Teenek/Huasteco"
+    },
+    {
+      "code": "516",
+      "name": "Na savi/Ñuu Saavi/Mixteco"
+    },
+    {
+      "code": "602",
+      "name": "Mayaʾwiinik/Maya"
+    }
+  ]
+}
