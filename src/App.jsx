@@ -48,7 +48,7 @@ function App(){
                 onChange={handleGroupChange}
            />}
        </div>
-       <Map selectedState={selectedState} />
+       <Map selectedState={selectedState} groupList={stateGroups} />
     </div>
 }
 

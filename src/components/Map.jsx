@@ -4,10 +4,15 @@ import 'mapbox-gl/dist/mapbox-gl.css';
 import '../css/Map.css';
 import municipios from '../data/muni-limits.json';
 import state_bounds from '../data/state-bounds.json';
+import pop_data from '../data/mex-indig-pop.json';
 
-function Map({ selectedState }){
+function Map({ selectedState, groupList }){
     const mapRef = useRef(null);
     const mapContainerRef = useRef(null);
+
+    const activeGroup = groupList.find(group => group.active);
+
+    console.log(activeGroup);
 
     useEffect(() => {
         mapboxgl.accessToken = import.meta.env.VITE_MAPBOX_TOKEN;
@@ -22,6 +27,11 @@ function Map({ selectedState }){
            mapRef.current.addSource('municipios', {
                type: 'geojson',
                data: municipios
+           });
+
+           mapRef.current.addSource('population', {
+               type: 'geojson',
+               data: pop_data
            });
 
             mapRef.current.addLayer({
@@ -42,7 +52,6 @@ function Map({ selectedState }){
                     "text-size": 10.5
                 }
             });
-        });
 
         return () => {
             mapRef.current.remove()
