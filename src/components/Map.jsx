@@ -3,6 +3,7 @@ import mapboxgl from 'mapbox-gl';
 import 'mapbox-gl/dist/mapbox-gl.css';
 import '../css/Map.css';
 import municipios from '../data/muni-limits.json';
+import state_bounds from '../data/state-bounds.json';
 
 function Map({ selectedState }){
     const mapRef = useRef(null);
@@ -50,9 +51,9 @@ function Map({ selectedState }){
 
 
     useEffect(() => {
-
         if (!mapRef.current) return;
         if (!mapRef.current.getLayer('municipal-limits')) return;
+        if (!mapRef.current.getLayer('municipal-labels')) return;
 
         mapRef.current.setFilter(
             'municipal-limits',
@@ -63,6 +64,15 @@ function Map({ selectedState }){
             'municipal-labels',
             ['==', ['get', 'cve_ent'], selectedState]
         );
+
+        const bounds = state_bounds[selectedState];
+
+        if (!bounds) return;
+
+        mapRef.current.fitBounds(bounds, {
+            padding: 30,
+            duration: 1500
+        });
 
     }, [selectedState]);
 
