@@ -1,22 +1,30 @@
 .select-and-label {
-    position: absolute;
-    top: 0.7rem;
-    left: 0.7rem;
-    padding: 0.2rem;
     display: flex;
     flex-flow: column nowrap;
     align-items: center;
+    gap: 0.2rem;
     z-index: 1;
     font-family: Helvetica, "Helvetica Neue", sans-serif;
     --select-border: #777;
 }
 
-.select-and-label::after {
+label {
+    padding: 0.2rem 0.7rem;
+    border: none;
+    border-radius: 0.5rem;
+    background-color: #f9f9f9b3;
+}
+
+.select-wrapper {
+    position: relative;
+}
+
+.select-wrapper::after {
     content: "";
     position: absolute;
     right: 0.75rem;
-    top: 52%;
-    transform: translateY(50%);
+    top: 50%;
+    transform: translateY(-50%);
     width: 0.8em;
     height: 0.5em;
     background-color: var(--select-border);
