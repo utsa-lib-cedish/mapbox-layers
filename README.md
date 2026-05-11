@@ -1,16 +1,1934 @@
-# React + Vite
+# Mapbox with React
 
-This template provides a minimal setup to get React working in Vite with HMR and some ESLint rules.
+In this project, we will learn how to use layers to display demographic data in Mapbox. We will build a basic React app using Vite. Then we will bring a Mapbox map into our React app. We will use QGIS to open shapefiles and export GeoJSON layers. We'll learn how to add the GeoJSON sources and display them as line and symbol layers in Mapbox. Then we will add an interaction layer, allowing the user to select areas from a dropdown and filtering the layers based on the user's choices. Then we'll use Python to manipulate socio-demographic data and generate GeoJSON files. We'll learn how to display a fill layer using varying colors and opacities to display different ethnic groups and population levels. Finally, we'll learn how to create a popup to display more specific information.
 
-Currently, two official plugins are available:
+This project is based on Mapbox's tutorial on [using checkboxes to toggle layers in a React app](https://docs.mapbox.com/help/tutorials/react-toggle-layers/?step=0).
 
-- [@vitejs/plugin-react](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react) uses [Oxc](https://oxc.rs)
-- [@vitejs/plugin-react-swc](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react-swc) uses [SWC](https://swc.rs/)
+## Start a React Project
 
-## React Compiler
+Start with an empty project in your IDE of choice. We'll use the **vite** development server to spin up a React project structure. Run `npm create vite@latest`. The Vite create project dialog opens. First, Node JS asks if it is OK to install the Vite package. Say yes.
 
-The React Compiler is not enabled on this template because of its impact on dev & build performances. To add it, see [this documentation](https://react.dev/learn/react-compiler/installation).
+![vite create](markdown-images/vite-create-1.png "the vite create command running in a terminal")
 
-## Expanding the ESLint configuration
+When we're asked to enter a project name, just enter `.`. This will create a project in the current directory. You should already have an empty directory with a gitignore file. If you enter a project name here, it will create another directory inside this one, and we don't want that.
 
-If you are developing a production application, we recommend using TypeScript with type-aware lint rules enabled. Check out the [TS template](https://github.com/vitejs/vite/tree/main/packages/create-vite/template-react-ts) for information on how to integrate TypeScript and [`typescript-eslint`](https://typescript-eslint.io) in your project.
+![vite create new project name](markdown-images/vite-create-2.png "vite create dialogue - new project name")
+
+Since we already have files in this directory, Vite wants to know what to do with them. We tell it to just ignore the files and continue.
+
+![vite create ignore existing files](markdown-images/vite-create-3.png "vite create dialogue - ignore existing files")
+
+When it asks you to select a framework, select React.
+
+![vite create select framework](markdown-images/vite-create-4.png "vite create select framework dialogue")
+
+When asked to select a variant, select JavaScript.
+
+![vite create select variant](markdown-images/vite-create-5.png "vite create select variant dialogue")
+
+Now you're ready to install.
+
+![vite create install](markdown-images/vite-create-6.png "vite create install dialogue")
+
+Vite will install a whole React development framework, including a `package.json` file, and then run `npm install` to install all the Node dependencies. When it's done, it will start a dev server and let you know what address it's running on.
+
+![vite create install done](markdown-images/vite-create-7.png "vite create is done and dev server started")
+
+## Get React working
+
+As helpful as Vite is, we aren't going to use its file contents. Go ahead and delete all the contents of the `src` folder.
+
+![delete src contents](markdown-images/prepare-project-1.png "deleting contents of the src directory")
+
+In the public folder, delete the `icons.svg` file. I also delete the `eslint.config` file because this file causes strict error checking which I find a bit overwhelming. That's a matter of preference.
+
+![delete src contents](markdown-images/prepare-project-2.png "deleting the icons and eslint files")
+
+Now create a file called `main.jsx`. Inside this file create the following content:
+
+```jsx
+import React from 'react';
+import ReactDOM from 'react-dom/client';
+
+const el = document.getElementById('root');
+const root = ReactDOM.createRoot(el);
+
+function App(){
+    return <div>Hello World!</div>
+}
+
+root.render(<App />);
+```
+
+Once you do this, if you go to the Vite dev server, you should see the output "Hello World!". Let's pause to understand what is happening here.
+
+If the server ever gets shut down, for example if you shut down your IDE, you can restart it with the command `npm run dev`.
+
+First, we are importing two Node libraries, React and ReactDOM. React is the core framework, and ReactDOM applies that framework to a web environment.
+
+Then, we get a reference to the `root` element. This is in the `index.html` file. If you look in the `index.html` file, you will see there is an element with an id of `root`. There is also a script link to the `main.jsx` file. This means the `index.html` file will load the `main.jsx` file, and the `main` script in turn will get a reference to the `root` element when it runs.
+
+The next line, `const root = ReactDOM.createRoot(el);`, tells React to take control of the `root` element and use that as the root for rendering content.
+
+Now, we create our first component. By default, we call it `App`. This is a JSX function. React components are functions that return JSX. This one just returns a div that has the content "Hello World!".
+
+Finally, we tell React to show that content on the screen with `root.render(<App />);`. This will take that reference to a React root and tell React to render the content there. With these steps, we begin to use React to render content.
+
+## Create App and Map Components
+
+### The App Component
+
+Now we are going to start to create a component structure. In React, we think of apps and web content as consisting of components, which are functions that return JSX.
+
+Inside our `src` directory we will a file called `App.jsx`. We'll take the function we wrote in `main.jsx` and copy it over to `App.jsx`. Then we will **export** the function. The code in our `App.jsx` function is now:
+
+```jsx
+function App(){
+    return <div>Hello World!</div>
+}
+
+export default App;
+```
+
+![create the App component](markdown-images/basic-react-1.png "the basic App commponent")
+
+Now we go back to `main.jsx` and we delete the function from that file. Instead we put an import statement and a link to the App file. Now we have the function written in the App component and **exported**, and we **import** it into `main.jsx`. This makes use of the JavaScript **module** system.
+
+`main.jsx`:
+```jsx
+import React from 'react';
+import ReactDOM from 'react-dom/client';
+import App from "./App";
+
+const el = document.getElementById('root');
+const root = ReactDOM.createRoot(el);
+
+root.render(<App />);
+```
+
+![create the App component](markdown-images/basic-react-2.png "the basic main file importing the App component")
+
+### Your Mapbox Token
+
+So far we are just creating a very basic React structure. Now let's bring in the map. To do this, we have to start with some housekeeping. To work with Mapbox, we'll need an API key, and to store that we are going to use a file that we will not share or commit to version control.
+
+When you created your Vite project, Vite created a file called .gitignore containing a list of all the files that Git version control should ignore in this project. We are going to add an entry to the gitignore. Add `.env.local`.
+
+![add .env.local to gitignore](markdown-images/map-component-2.png "A gitignore file with .env.local added")
+
+Now create the `.env.local` file in the root of your project directory. Leave it empty for now.
+
+![create .env.local](markdown-images/map-component-3.png "an empty env.local file")
+
+For the next step, we are going to need a Mapbox API key. Go to [mapbox.com](mapbox.com), make sure you have a free account, and copy your default public key. For projects that will be made public, you should create a [url-restricted token](https://docs.mapbox.com/accounts/guides/tokens/#url-restrictions) but for learning purposes, your default public token is fine.
+
+![get mapbox api key](markdown-images/map-component-4a.png "the mapbox website on an account's tokens page")
+
+In .env.local, declare a variable called `VITE_MAPBOX_TOKEN` and set its value to your token: `VITE_MAPBOX_TOKEN=your-mapbox-token`. Do not put quotes around the token value.
+
+![put token value in environment file](markdown-images/map-component-5.png "the .env.local file with a mapbox token")
+
+This is the environment file we wil use for any API tokens or keys that our app might use. We put the file in gitignore so that it is never shared if we want to show or share our project. Note that this will work only in a Vite environment. We could also put it in a file called `keys.js` and export it using the JavaScript module system.
+
+Now we will need to install our mapbox-gl React library. Open a second terminal window and enter `npm install mapbox-gl`. This will install the official Mapbox GL JS package for use with the React framework.
+
+![npm install mapbox-gl](markdown-images/map-component-6.png "npm install mapbox-gl command")
+
+### The Map Component
+
+We are now ready to start working on our Map component. Inside `src`, we will create a `components` directory. Inside `components`, we will create a file called `Map.jsx`. Inside the Map component, for now we'll just create the Map function and export it.
+
+`Map.jsx`:
+```jsx
+function Map(){
+
+}
+
+export default Map;
+```
+
+![create the Map component](markdown-images/map-component-1.png "An empty Map component")
+
+Now we will start editing the Map component. First, we will have it return a div with the id "map-container":
+
+`Map.jsx`:
+```jsx
+function Map(){
+    return <div id='map-container'></div>
+}
+
+export default Map;
+```
+
+We set up our imports at the top of the file.
+
+First, we are going to import two React **hooks**. Hooks are functions that allow us to use some of React's built-in features from our code. UseEffect and useRef are two basic built-in React hooks.
+
+Second, we are going to import the mapbox GL library that we installed earlier. In addition, we need to import the default Mapbox style sheet, or the map will not render correctly on our page.
+
+`Map.jsx`:
+```jsx
+import { useEffect, useRef} from "react";
+import mapboxgl from 'mapbox-gl';
+import 'mapbox-gl/dist/mapbox-gl.css';
+
+function Map(){
+    return <div id='map-container'></div>
+}
+
+export default Map;
+```
+
+### Give the Map Width and Height
+
+Now we are going to do a bit more basic framework setup. We need custom style sheets for the App and Map components, we need to connect those components to the new style sheets, and we need to wire together our App component to our new Map component.
+
+First, create a new subdirectory of `src` called `css`. This is where we will put our custom style sheets. Inside this directory, create two new style sheets called `App.css` and `Map.css`.
+
+![create app.css and map.css](markdown-images/map-component-7.png "empty map and app style sheets")
+
+In our Map component's style sheet, we will add a selector for the div with the `map-container` id and give it width and height. Without this, the map will not show up on the page.
+
+`Map.css`:
+```css
+#map-container {
+    width: 100%;
+    height: 100%;
+}
+```
+
+Next, import the style sheet into the Map component. Add this import statement in `Map.jsx`: `import '../css/Map.css';`.
+
+Next, let's move over to the App component. We are going to import the Map component into the App component and replace the Hello World message with the Map component. We are also going to give the div that wraps the Map component an id so we can add style rules for it. We are also going to import the App style sheet.
+
+`App.jsx`:
+```jsx
+import Map from "./components/Map";
+import './css/App.css';
+
+function App(){
+    return <div id="page-wrapper">
+       <Map />
+    </div>
+}
+
+export default App;
+```
+
+Here, we are making the Map component a child of the App component. Notice we are importing the Map component. Then, in our JSX return, we return the Map component inside a wrapping div.
+
+In our App component style sheet, we'll make sure the page-wrapper gets the full viewport height. Since we told the map to occupy 100% of available space, and its wrapper occupies the whole viewport, this means the map will start out occupying the entire browser viewport.
+
+`App.css`:
+```css
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+#page-wrapper {
+    height: 100dvh;
+    width: 100dvw;
+}
+```
+
+### Output the Map
+
+Now we are ready to write the code that outputs the map. Add the following code to the top of the Map function in the Map component, above the return value:
+
+`Map.jsx`:
+```jsx
+    const mapRef = useRef(null);
+    const mapContainerRef = useRef(null);
+
+    useEffect(() => {
+        mapboxgl.accessToken = import.meta.env.VITE_MAPBOX_TOKEN;
+        mapRef.current = new mapboxgl.Map({
+            container: mapContainerRef.current,
+        });
+
+        return () => {
+            mapRef.current.remove()
+        }
+    }, [])
+```
+
+Let's go over what we are doing here. Earlier we imported the `useRef` hook from React. The `useRef` hook is typically used in React to hold references to DOM elements, and sometimes to other values that need to be persisted across component renders. In this case we are using one ref to hold a reference to the map itself, and another ref for the map container. First we use the `useRef` hooks to create the empty (null) refs.
+
+Next, we use the `useEffect` hook. This is used to synchronize components with external systems. In this case, we are communicating with the Mapbox API and generating a Map based on the returns of that network connection.
+
+`useEffect` takes as its arguments a function and an array. The function determines what happens, the array determines when it happens. In this case we pass it a function and an *empty* array. The empty array means the function will run once, when the component renders.
+
+Inside the function, we first get the Mapbox token that we retrieved and stored earlier. The Mapbox API won't let us connect without this token. Next, we take the `mapRef` ref variable that we declared earlier, and we set its value to be a new Mapbox map.
+
+The new Map() function takes as its argument an object, containing details for how the new Map should be configured. In this case we are keeping it as simple as possible. We just tell it where its container is. Its container will be the current value of the map container ref that we declared earlier.
+
+The return value of a useEffect is always a function. This function runs usually when a component is re-rendered or, if it only renders once -- as this one does -- when the component unmounts. This is typically a **cleanup** function, which removes any lingering refs or other artifacts of the useEffect that may interfere with correct app function in the future. We don't want wandering map refs anywhere in memory, so we are here using the cleanup function to remove these refs.
+
+There is one more important edit we need to make. In the return statement to Map function, we need to add the ref as a property, or *prop* of the JSX component. We do that like this: `return <div id="map-container" ref={mapContainerRef}></div>`. This says that the map-container div will be linked to a ref, and the ref it will be linked to is the `mapContainerRef` we declared earlier. Remember, we configured the new map to expect that its container would be the element referenced by `mapContainerRef`, but at that time the ref was set to null. Now we are specifying an element for that ref.
+
+Here is the full content of our Map component so far:
+
+`Map.jsx`:
+```jsx
+import { useEffect, useRef} from "react";
+import mapboxgl from 'mapbox-gl';
+import 'mapbox-gl/dist/mapbox-gl.css';
+import '../css/Map.css';
+
+function Map(){
+    const mapRef = useRef(null);
+    const mapContainerRef = useRef(null);
+
+    useEffect(() => {
+        mapboxgl.accessToken = import.meta.env.VITE_MAPBOX_TOKEN;
+        mapRef.current = new mapboxgl.Map({
+            container: mapContainerRef.current,
+        });
+
+        return () => {
+            mapRef.current.remove()
+        }
+    }, [])
+
+    return <div id="map-container" ref={mapContainerRef}></div>
+}
+
+export default Map;
+```
+
+When you go to your dev server address, you should now see a Mapbox map displayed on the browser viewport.
+
+![map displayed](markdown-images/map-component-8.png "A Mapbox map displayed on a browser")
+
+### Configuration Basics
+
+Notice that the Map function takes an object as its argument. This is the map configuration object. In this case, it only has one property, `container`. Typically we would add a few more configuration properties, especially `center` and `zoom`. We may also want to specify a style.
+
+The `center` property takes an array of numbers representing the longitude (lng) and latitude (lat) the map should be centered to on first loading. The `zoom` property tells the map how far to zoom on first loading. Here we have the map centering and zooming on UT San Antonio on first load:
+
+```jsx
+mapRef.current = new mapboxgl.Map({
+            container: mapContainerRef.current,
+            center: [-98.6166945097312, 29.585128528764358],
+            zoom: 12
+        });
+```
+
+In addition, you can change the style from standard to satellite:
+
+```jsx
+mapRef.current = new mapboxgl.Map({
+            container: mapContainerRef.current,
+            center: [-98.6166945097312, 29.585128528764358],
+            zoom: 12,
+            style: 'mapbox://styles/mapbox/standard-satellite'
+        });
+```
+
+## Adding data
+
+### State and municipal boundaries
+
+We are going to build an application that shows the population of Indigenous groups in Mexico, broken down by state and municipality. We first need to get our data sources.
+
+We can get the geographic data from [INEGI](https://www.inegi.org.mx/default.html), the Mexican government's Institute for Statistics and Geography. They offer good [base maps](https://www.inegi.org.mx/descarga-mapa/). We will take the [base map file suitable for QGIS](https://www.inegi.org.mx/contenidos/descarga-mapa/proyectos-sig/nal-QGis.zip), the free geographic information system software.
+
+Once you've download the zip file, open it and you'll see two files: a geopackage (.gpkg) and a QGIS project file (.qgz). Just open QGIS, and then you can drag and drop either of the two files into the QGIS window to open a new project with the data.
+
+![Open the data in QGIS](markdown-images/gis-1.png "A QGIS window open with Mexican state and municipal boundaries showing")
+
+In the layers pane you will see layers labeled "Etiquetas Estados" (state labels), "Límites Geoestadísticos Estatales" (geo-statistical state limits), and "Límites Geoestadísticos Municipales" (geo-statistical municipal limits). We will take the municial limits layers so we can be sure we have state and municipal boundaries associated with official Mexican geographic codes. This will allow us to connect the boundary lines with other statistics such as population data for these areas.
+
+Right click on the municial limits layer and select Export --> Save Features As.
+
+![Export the data from QGIS](markdown-images/gis-2.png "A QGIS window showing how to export a layer")
+
+In the export dialogue, GeoJSON will be automatically selected as the format. Specify the file name and location. QGIS will automatically add `.geojson` to any file name you select, We'll change that later. We want to save the file to a new subdirectory in our `src` directory, called `data`.
+
+Under CRS, select EPSG:4326, which is the projection that Mapbox uses. At the bottom, you can uncheck "Add saved file to map" since we won't be using this in QGIS.
+
+![Define the export parameters](markdown-images/gis-3.png "The QGIS export dialogue")
+
+The result should be a few new files in our new `data` directory.
+
+![See the files in the IDE](markdown-images/gis-4.png "GeoJSON and qmd files in the data directory")
+
+We need to rename the geojson file to just have the `.json` file ending, or Mapbox will not read it correctly. We also don't need the `.qmd` file that QGIS created.
+
+![Rename the files](markdown-images/gis-5.png "JSON files in the data directory")
+
+### Adding layers in Mapbox
+
+Now we can add the GeoJSON data as a layer to our Mapbox base map. Mapbox's standard map style already has Mexican state boundaries, so the municipal boundaries will fit within Mapbox's existing map data. To add layers, we first need to add the data as a source. We will use the [addSource method](https://docs.mapbox.com/mapbox-gl-js/api/map/#map#addsource). This method accepts two arguments. The first should be a string, which is the unique name for the source. The second is an object that specifies the [type of source](https://docs.mapbox.com/style-spec/reference/sources/) and the source itself.
+
+The source can't be added until the map has loaded. If we try to do so, we'll get an error. So we have to add some code to ensure that map loads first, then the source gets added.
+
+First we will import import the JSON. In `Map.jsx`, add the following import: `import municipios from '../data/muni-limits.json';`. Then, in the same useEffect that generates the map, we will write:
+
+`Map.jsx`:
+```jsx
+ mapRef.current.on('load', () => {
+           mapRef.current.addSource('municipios', {
+               type: 'geojson',
+               data: municipios
+           })
+        });
+```
+
+On its own, this will have no visible effect on our map. To visualize the data we'll have to specify a layer with instructions on how to render the data on the map. We'll use the [addLayer method](https://docs.mapbox.com/mapbox-gl-js/api/map/#map#addlayer). In adding a layer, we will have to specify the source and type. The list of types can be found in the [layers documentation](https://docs.mapbox.com/style-spec/reference/layers/#type). For this layer we could use "fill" if we wanted to add colors to each muncipality, but since we just want the boundary lines, we can use "line".
+
+Once we have selected a type, we can either accept the default presentation for that type, or we can customize it with the paint property. Each type has its own paint property options. For example, for the [line type paint property](https://docs.mapbox.com/style-spec/reference/layers/#line) we can specify the color and width, among many other options.
+
+We'll start by rendering it with the default line options, specifying no custom paint property. Underneath the code to add the layer, add the following method:
+
+`Map.jsx`:
+```jsx
+ mapRef.current.addLayer({
+                id: 'municipal-limits',
+                type: 'line',
+                source: 'municipios'
+            });
+```
+
+We also need to change the center and zoom properties we specified earlier, which focus on San Antonio. To center on Mexico, set the properties as follows: `center: [-103.7294, 23.8002], zoom: 4.23`.
+
+Our Map component now looks like this:
+
+`Map.jsx`:
+```jsx
+import { useEffect, useRef} from "react";
+import mapboxgl from 'mapbox-gl';
+import 'mapbox-gl/dist/mapbox-gl.css';
+import '../css/Map.css';
+import municipios from '../data/muni-limits.json';
+
+function Map(){
+    const mapRef = useRef(null);
+    const mapContainerRef = useRef(null);
+
+    useEffect(() => {
+        mapboxgl.accessToken = import.meta.env.VITE_MAPBOX_TOKEN;
+        mapRef.current = new mapboxgl.Map({
+            container: mapContainerRef.current,
+            center: [-103.7294, 23.8002],
+            zoom: 4.23,
+            style: 'mapbox://styles/mapbox/standard'
+        });
+
+        mapRef.current.on('load', () => {
+           mapRef.current.addSource('municipios', {
+               type: 'geojson',
+               data: municipios
+           });
+
+            mapRef.current.addLayer({
+                id: 'municipal-limits',
+                type: 'line',
+                source: 'municipios'
+            });
+        });
+
+        return () => {
+            mapRef.current.remove()
+        }
+    }, [])
+
+    return <div id="map-container" ref={mapContainerRef}></div>
+}
+
+export default Map;
+```
+
+You should now see the boundary lines for Mexican municipalities.
+
+![See boundaries in Mapbox](markdown-images/gis-6.png "A map of Mexico showing the boundaries of all municipalities")
+
+The lines appear a bit thick, so we can use the addLayer method's `paint` property to customize the layer style.
+
+`Map.jsx`:
+```jsx
+ mapRef.current.addLayer({
+                id: 'municipal-limits',
+                type: 'line',
+                source: 'municipios',
+                paint: {
+                    "line-width": 0.1
+                }
+            });
+```
+
+If we want to show the municipality labels, we need to add a separate text layer. This will be a layer of type [symbol](https://docs.mapbox.com/style-spec/reference/layers/#symbol). Symbol layers are used for both icons and text labels. Instead of a paint property, we are going to give this layer a [layout property](https://docs.mapbox.com/style-spec/reference/layers/#layout-property). Map layers in Mapbox can have their appearance customized through either the paint or the layout property. The documentation tells us which to use for each sub-property.
+
+The crucial layout property that will tell Mapbox what to render is the `text-field` property. This can be used to provide a hard-coded value, but in this case we want each municipality to have its own label. To that end, we are going to use an [expression](https://docs.mapbox.com/style-spec/reference/expressions/) for the property's value. Specifically, we'll use a [data expression](https://docs.mapbox.com/style-spec/reference/expressions/#data-expressions) to retrieve feature properties.
+
+But how do we know what feature to retrieve? Here we may find it helpful to go back to QGIS and look at the layer attribute table. Make sure the municipal data layer is selected, and then find the attribute table icon, or just press F6.
+
+![Open the attribute table](markdown-images/gis-7.png "The cursor hovering over the attribute table icon in QGIS")
+
+With the attribute table open, look at the name of the column that contains the municipality names. In this case, it is called "nomgeo".
+
+![Look at the attribute table](markdown-images/gis-8.png "The attribute table for Mexican municipality data")
+
+Back in our IDE, we can now write our expression, specifying the `get` data operator and the name of the field to retrieve. We can also control the text size. We could customize many other text properties.
+
+`Map.jsx`:
+```jsx
+mapRef.current.addLayer({
+                id: 'municipal-labels',
+                type: 'symbol',
+                source: 'municipios',
+                layout: {
+                    "text-field": ['get', 'nomgeo'],
+                    "text-size": 10.5
+                }
+            });
+```
+
+We should now be able to see the names of the municipalities.
+
+![See the municipality names](markdown-images/gis-9.png "A map showing Mexican municipality boundaries, with labels")
+
+## A Dropdown Filter
+
+Now we are going to enable the user to filter by state. To do this, we are going to build a dropdown menu with optioins for each Mexican state, then wire that to the map in such a way that the map layer gets a filter based on the user's selection.
+
+### Displaying the Dropdown
+
+To populate the menu, we will want to create a list of all the Mexican states. We already have that in the geopackage we obtained from INEGI. We will need to reshape the data to suit our needs. Python is very good at reshaping text data. We will use Python to read the geopackage, select the appropriate layer, reshape the data, and create a JSON file for our application.
+
+The Python snippets that follow assume use of a Notebook such as Jupyter Notebook or Google Collab.
+
+We can load a geopackage file and inspect its layer structure using the `geopandas` library:
+
+```python
+import geopandas as gpd
+
+gpd.list_layers('MapaBaseMultiescala.gpkg')
+```
+
+Once we know the name of the layer we want to use, we can inspect it by turning it into a data frame.
+
+```python
+gdf = gpd.read_file('MapaBaseMultiescala.gpkg', layer='etiquetas_estados')
+gdf
+```
+
+Once we've determined that we have the correct layer selected, with the data we need, we can exclude the information we don't need and rename the columns to suit our needs.
+
+```python
+estados_df = (
+    gdf[['cvegeo', 'nomgeo']]
+    .rename(columns={
+        'cvegeo': 'code',
+        'nomgeo': 'name'
+    })
+)
+```
+
+We'll then convert it into a Python dictionary format, which is identical to the JavaScript array we will eventually use. We can store the resulting data in a file.
+
+```python
+import json
+
+estados = estados_df.to_dict(orient='records')
+
+with open("mex-states.json", "w", encoding="utf-8") as f:
+    json.dump(estados, f, ensure_ascii=False, indent=2)
+```
+
+Now we can transfer that JSON file into our `src/data` directory.
+
+![Bring in the list of states](markdown-images/states-dropdown-1.png "A WebStorm window shoing the mex-states.json file in the src/data directory")
+
+There are a couple of things we can do to clean up the data before we use it. In the data set there is a rogue new line character in entry 09. Let's remove that.
+
+![Edit the Ciudad de Mexico entry](markdown-images/states-dropdown-2.png "Ciudad de Mexico in a JSON file with a newline character")
+
+![Edit the Ciudad de Mexico entry](markdown-images/states-dropdown-3.png "Ciudad de Mexico in a JSON file with no newline character")
+
+We can also edit the entries for Coahuila, Michoacán and Veracruz so they just read "Coahuila", "Michoacán", and "Veracruz". These are the more familiar and compact names.
+
+We are now ready to construct our dropdown. A basic dropdown has the following structure:
+
+```html
+<label for="pet-select">Choose a pet:</label>
+
+<select name="pets" id="pet-select">
+  <option value="">--Please choose an option--</option>
+  <option value="dog">Dog</option>
+  <option value="cat">Cat</option>
+  <option value="hamster">Hamster</option>
+  <option value="parrot">Parrot</option>
+  <option value="spider">Spider</option>
+  <option value="goldfish">Goldfish</option>
+</select>
+```
+Source: [Mozilla Developer Network](https://developer.mozilla.org/en-US/docs/Web/HTML/Reference/Elements/select)
+
+A `select` element wraps around a set of `option` elements. Each `option` element has a `value` attribute. The `select` element must have an `id` attribute that corresponds to the `for` attribute of a `label` element. While it is possible to have a `select` element without a `label`, it violates accessibility standards. On the other hand, the `select` element's `name` attribute is not necessary in our context because we are not sending the dropdown responses to any remote server.
+
+We want our `value` attribute populated by our state JSON's `code` properties, while the content is populated by the `name` properties. To that end, we'll grab the JSON in our App component and pass it down to our Dropdown component as a prop. We are planning on making our Dropdown component reusable, so we are also going to pass in a prop called `id` that will be used to set the `select` element `id` and the `label` element `for` attributes.
+
+Create the outline of the Dropdown component and save it in the `src/components` directory:
+
+`Dropdown.jsx`:
+```jsx
+function Dropdown(){
+    
+}
+
+export default Dropdown;
+```
+
+Now we can import the element into our App component and set it as a child of App.
+
+`App.jsx`:
+```jsx
+import Map from "./components/Map";
+import './css/App.css';
+import Dropdown from "./components/Dropdown";
+
+function App(){
+    return <div id="page-wrapper">
+       <Dropdown />
+       <Map />
+    </div>
+}
+
+export default App;
+```
+
+Next, let's import the states list JSON and set it as a variable called `states`, then pass it into the Dropdown component as a prop called `options`, along with an `id` prop. This will result in our code receiving the list of states from the JSON file and passing it into our Dropdown component.
+
+`App.jsx`:
+```jsx
+import Map from "./components/Map";
+import './css/App.css';
+import states from './data/mex-states.json';
+import Dropdown from "./components/Dropdown";
+
+function App(){
+    return <div id="page-wrapper">
+       <Dropdown
+           options={states}
+           id="state"
+       />
+       <Map />
+    </div>
+}
+
+export default App;
+```
+
+Back in our Dropdown component, we'll receive the `options` and `id` props from its parent component, App. Then we'll create a very basic jsx return for our component.
+
+`Dropdown.jsx`:
+```jsx
+function Dropdown( {options, id }){
+    return <div>
+        <label></label>
+        <select>
+            
+        </select>
+    </div>
+}
+
+export default Dropdown;
+```
+
+Now we can use the props we passed in to our Dropdown component to populate the dropdown. We'll use the id to populate the label and the `select` element's `id` attribute, and we'll use the `options` prop to generate the dropdown options. We'll use the built-in JS `.map` function for this, which is a very common development pattern. When we use `.map` in React we have to give each resulting element a unique `key` attribute.
+
+`Dropdown.jsx`:
+```jsx
+function Dropdown( {options, id }){
+    return <div>
+        <label htmlFor={id}>{id.charAt(0).toUpperCase() + id.slice(1)}</label>
+        <select id={id}>
+            {
+                options.map(option => (
+                        <option
+                            value={option.code}
+                            key={option.code}
+                        >
+                            {option.name}
+                        </option>
+                    ))
+            }
+        </select>
+    </div>
+
+}
+
+export default Dropdown;
+```
+
+At this point, we should see the dropdown appear above our map, with the correct list of states. That said, it doesn't look very good, so our next step is to make it a bit more pleasing to the eye.
+
+![Display the dropdown](markdown-images/states-dropdown-4.png "A map displaying a dropdown with a list of all Mexican states")
+
+### Styling the Dropdown
+
+There are many different ways to style a dropdown, from fully customized JavaScript-driven approaches, to imported components and libraries, to simple CSS tweaks. We will be using a very basic all-CSS approach for simplicity, though this will limit the extent to which we can alter the appearance of the native browser default.
+
+This approach is adapted from an example by [Stephanie Eckles](https://codepen.io/5t3ph/pen/MWyyYNz).
+
+First, we'll create a `Dropdown.css` file in the `src/css` directory, and import the file into our Dropdown component. The import statement is `import '../css/Dropdown.css';`.
+
+![Create the dropdown style sheet](markdown-images/states-dropdown-5.png "A CSS import in the Dropdown component")
+
+To arrange the label above the dropdown, we'll create a wrapper for the two elements. Our component already has such a wrapper; we'll give it a class of `select-and-label`. We'll also add a colon after the label content for greater clarity.
+
+`Dropdown.jsx`:
+```jsx
+function Dropdown( {options, id }){
+    return <div className='select-and-label'>
+        <label htmlFor={id}>{id.charAt(0).toUpperCase() + id.slice(1)}:</label>
+```
+
+We can now add some CSS rules targeting that div.
+
+`Dropdown.css`:
+```css
+.select-and-label {
+    position: absolute;
+    top: 0.7rem;
+    left: 0.7rem;
+    padding: 0.2rem;
+    display: flex;
+    flex-flow: column nowrap;
+    align-items: center;
+    z-index: 1;
+    font-family: Helvetica, "Helvetica Neue", sans-serif;
+    --select-border: #777;
+}
+```
+
+We are using absolute positioning to put it at the top left of the page. We're using flex display to put the label on top of the dropdown and center the label on the input element. We are using a z-index property to make sure the dropdown is not covered by map content. We define a font family -- you can customize this as you wish. We are also declaring a CSS variable for a color we will use in a few different places.
+
+Next, we'll add a `className` prop to our `select` element so we can target it directly: `<select className='dropdown' id={id}>`. With this in place, we can write some more rules targeting the dropdown appearance directly:
+
+`Dropdown.css`:
+```css
+.dropdown {
+    border: 1px solid var(--select-border);
+    border-radius: 0.25rem;
+    padding: 0.25rem 2rem 0.25rem 0.5rem;
+    font-size: 1rem;
+    line-height: 1.1;
+    cursor: pointer;
+    background-image: linear-gradient(to top, #f9f9f9, #fff 50%);
+}
+```
+
+Here we add a slightly curved border using the color we defined earlier. We add some padding and customize the font a bit. We replace the arrow cursor with the pointer cursor. Finally, we take control of the background color, giving it a subtle white gradient. You can customize this color as you wish.
+
+Finally, we can customize the appearance of the dropdown arrow symbol. To do this, we first need to remove the default symbol by adding `appearance: none` to our dropdown class. When we do this, the default symbol disappears. Now we will use an `::after` pseudo-class to add our own symbol. Here's the full css:
+
+`Dropdown.css`:
+```css
+.select-and-label {
+    position: absolute;
+    top: 0.7rem;
+    left: 0.7rem;
+    padding: 0.2rem;
+    display: flex;
+    flex-flow: column nowrap;
+    align-items: center;
+    z-index: 1;
+    font-family: Helvetica, "Helvetica Neue", sans-serif;
+    --select-border: #777;
+}
+
+.select-and-label::after {
+    content: "";
+    position: absolute;
+    right: 0.75rem;
+    top: 52%;
+    transform: translateY(50%);
+    width: 0.8em;
+    height: 0.5em;
+    background-color: var(--select-border);
+    clip-path: polygon(100% 0%, 0 0%, 50% 100%);
+    pointer-events: none;
+}
+
+.dropdown {
+    border: 1px solid var(--select-border);
+    border-radius: 0.25rem;
+    padding: 0.25rem 2rem 0.25rem 0.5rem;
+    font-size: 1rem;
+    line-height: 1.1;
+    cursor: pointer;
+    background-image: linear-gradient(to top, #f9f9f9, #fff 50%);
+    appearance: none;
+}
+```
+Notice we are giving the arrow the same color as the border. We position it on the right and control its vertical position with `top` and `transform` properties. We control its size with the `width` and `height` properties, then its shape with a `clip-path` property. We block the cursor from interacting with it using `pointer-events: none`, otherwise it would block the user from interacting with the dropdown.
+
+We could get much, much more elaborate with this, but this will work for now. Let's move back to the functionality.
+
+### Getting the User Selection
+
+Now let's get the user's state selection from the dropdown. Eventually this will change content on the screen, so we know we need to store it as a piece of state. We also know the state will change in the dropdown component, but the change will be in the map component. So we need to define the state in the parent of the two components, so the two can communicate with each other via the parent.
+
+In `App.jsx`, we'll import `useState` at the top: `import { useState } from "react";`. Then, at the top of the App function, we'll define our piece of state: `const [selectedState, setSelectedState] = useState(null)`. We'll start with nothing selected (null default). Then we'll pass the state into the dropdown component. We'll pass the `selectedState` in a prop called `value`.
+
+`App.jsx`:
+```jsx
+import { useState } from "react";
+import Map from "./components/Map";
+import './css/App.css';
+import states from './data/mex-states.json';
+import Dropdown from "./components/Dropdown";
+
+function App(){
+    const [selectedState, setSelectedState] = useState('')
+
+    return <div id="page-wrapper">
+       <Dropdown
+           options={states}
+           id="state"
+           value={selectedState}
+           onChange={setSelectedState}
+       />
+       <Map />
+    </div>
+}
+
+export default App;
+```
+
+Back in the dropdown component, we are going to receive the prop we just defined.
+
+
+
+At this point, when we change the value of the dropdown, we should see the numeric code appear in our developer console.
+
+![Show the state code](markdown-images/states-dropdown-6.png "A map with a dropdown showing Puebla selected and the code 21 in the console")
+
+### Use the Dropdown to Set a Filter
+
+We are ready to use the dropdown to filter content in the map layers. In order to do this, we need the Dropdown component to set the value of the `selectedState` state. We will need the App component to become aware of the change of state. And we will need the App component to pass the change down to the Map component, which will have to re-render in response to the user action.
+
+To do this, we will need to define an event handler in the App component and pass it down to the Dropdown. The Dropdown will have to activate the event handler in response to the user actions. And we will have to define a `useEffect` hook in the Map to change the appearance of the map in response to the change of state.
+
+First, we'll define a piece of state to keep track of the user's selection. In the App component, we'll import the `useState` hook and set a variable to keep track of it.
+
+`App.jsx`:
+```jsx
+import { useState } from "react";
+// ... other import statements
+
+function App(){
+    const [selectedState, setSelectedState] = useState("");
+
+   // ... rest of the App component
+}
+
+export default App;
+```
+
+We'll start out with no set default, passing an empty string to the `useState` function.
+
+Next, we'll create our event handler:
+
+`App.jsx`:
+```jsx
+function App(){
+    const [selectedState, setSelectedState] = useState("");
+
+    const handleChange = (e) => {
+        console.log(e.target.value);
+        setSelectedState(e.target.value);
+    }
+
+   // ... rest of the App component
+}
+```
+
+Following React conventions, we call the handler `handleChange` since it will be responding to `onChange` events on the `select` element. We will be logging the `value` attribute of the selected option so as to inspect it in the console. Then we'll use that value to set the `selectedState` state variable.
+
+Now we can pass the piece of state and the event handler down to the Dropdown component.
+
+`App.jsx`:
+```jsx
+//...
+ 
+ <Dropdown
+           options={states}
+           id="state"
+           selectedValue={selectedState}
+           onChange={handleChange}
+       />
+       
+//...
+```
+
+The Dropdown component will receive the handler as a prop called `onChange`, and will also receive the piece of state containing the user's selection.
+
+In the Dropdown component, we'll receive the props we passed down from the App component:
+
+`Dropdown.jsx`:
+```jsx
+function Dropdown( {options, id, selectedValue, onChange }){
+
+//.. rest of Dropdown component
+```
+
+Then we will use these to set the `select` element's `onChange` and `value` attributes:
+
+```jsx
+<select
+            className='dropdown' id={id}
+            onChange={onChange}
+            value={selectedValue}
+        >
+```
+
+With these attributes set, whenever the selected dropdown option changes, it will trigger the event handler. Since the event handler is defined in the App component, the App component will become aware of the user's selection and will be able to pass it down to the Map component.
+
+Now we can pass the user's selection down to the Map component:
+
+`App.jsx`:
+```jsx
+<Map selectedState={selectedState} />
+```
+
+Finally, we receive that prop in the Map component and use it to trigger a `useEffect`.
+
+`Map.jsx`:
+```jsx
+//... import statements
+
+function Map({ selectedState }){
+
+//.. mapRefs and first useEffect
+
+
+useEffect(() => {
+        if (!mapRef.current) return;
+        if (!mapRef.current.getLayer('municipal-limits')) return;
+        if (!mapRef.current.getLayer('municipal-labels')) return;
+
+        mapRef.current.setFilter(
+            'municipal-limits',
+            ['==', ['get', 'cve_ent'], selectedState]
+        );
+
+        mapRef.current.setFilter(
+            'municipal-labels',
+            ['==', ['get', 'cve_ent'], selectedState]
+        );
+
+    }, [selectedState]);
+```
+
+This `useEffect` will run whenever the `selectedState` changes. It first checks to make sure the map exists and the layers we intend to filter exist. Then it retrieves the `cve_ent` code from the layer data and checks that it matches the value of the selected option. It will filter out anything that does not equal that value. This follows [Mapbox filter expression syntax](https://docs.mapbox.com/style-spec/reference/expressions/).
+
+### Centering on the selected state
+
+Now we are going to ensure that the map centers on the user's selected state each time the selection changes. We're going to use Python to generate the data we need from a geojson file we already have.
+
+Earlier, we generated a file with the municipal boundaries, which we called `muni-limits.json`, and which currently resides in our `src/data` directory. Now, we will load that file into geopandas, group the data by state instead of municipality, and create a dictionary with the maximum and minimum coordinates for each state. Then we'll output the result as a new JSON file. Be sure that the resulting file is in your `scr/data` directory.
+
+```python
+import geopandas as gpd
+import json
+
+municipios = gpd.read_file('muni-limits.json')
+
+estados = municipios.dissolve(by="cve_ent")
+
+bounds_dict = {}
+
+for state_code, row in estados.iterrows():
+    minx, miny, maxx, maxy = row.geometry.bounds
+    bounds_dict[state_code] = [
+        [minx, miny],
+        [maxx, maxy]
+    ]
+
+with open("state-bounds.json", "w", encoding="utf-8") as f:
+    json.dump(bounds_dict, f, indent=2)
+```
+
+Back in the Map component, import the data: `import state_bounds from '../data/state-bounds.json';`. Then we will add a few lines to the `useEffect` hook that also sets the filters:
+
+`Map.jsx`:
+```jsx
+        const bounds = state_bounds[selectedState];
+
+        if (!bounds) return;
+
+        mapRef.current.fitBounds(bounds, {
+            padding: 30,
+            duration: 1500
+        });
+```
+
+With this little change, the map will zoom to the selected state every time the selection changes.
+
+Here is the complete JSX code so far:
+
+`App.jsx`:
+```jsx
+import { useState } from "react";
+import Map from "./components/Map";
+import './css/App.css';
+import states from './data/mex-states.json';
+import Dropdown from "./components/Dropdown";
+
+function App(){
+    const [selectedState, setSelectedState] = useState("");
+
+    const handleChange = (e) => {
+        console.log(e.target.value);
+        setSelectedState(e.target.value);
+    }
+
+    return <div id="page-wrapper">
+       <Dropdown
+           options={states}
+           id="state"
+           selectedValue={selectedState}
+           onChange={handleChange}
+       />
+       <Map selectedState={selectedState} />
+    </div>
+}
+
+export default App;
+```
+
+`Dropdown.jsx`:
+```jsx
+import '../css/Dropdown.css';
+
+function Dropdown( {options, id, selectedValue, onChange }){
+    return <div className='select-and-label'>
+        <label htmlFor={id}>{id.charAt(0).toUpperCase() + id.slice(1)}:</label>
+        <select
+            className='dropdown' id={id}
+            onChange={onChange}
+            value={selectedValue}
+        >
+            {
+                options.map(option => (
+                        <option
+                            value={option.code}
+                            key={option.code}
+                        >
+                            {option.name}
+                        </option>
+                    ))
+            }
+        </select>
+    </div>
+
+}
+
+export default Dropdown;
+```
+
+`Map.jsx`:
+```jsx
+import { useEffect, useRef} from "react";
+import mapboxgl from 'mapbox-gl';
+import 'mapbox-gl/dist/mapbox-gl.css';
+import '../css/Map.css';
+import municipios from '../data/muni-limits.json';
+import state_bounds from '../data/state-bounds.json';
+
+function Map({ selectedState }){
+    const mapRef = useRef(null);
+    const mapContainerRef = useRef(null);
+
+    useEffect(() => {
+        mapboxgl.accessToken = import.meta.env.VITE_MAPBOX_TOKEN;
+        mapRef.current = new mapboxgl.Map({
+            container: mapContainerRef.current,
+            center: [-103.7294, 23.8002],
+            zoom: 4.23,
+            style: 'mapbox://styles/mapbox/standard'
+        });
+
+        mapRef.current.on('load', () => {
+           mapRef.current.addSource('municipios', {
+               type: 'geojson',
+               data: municipios
+           });
+
+            mapRef.current.addLayer({
+                id: 'municipal-limits',
+                type: 'line',
+                source: 'municipios',
+                paint: {
+                    "line-width": 0.1,
+                }
+            });
+
+            mapRef.current.addLayer({
+                id: 'municipal-labels',
+                type: 'symbol',
+                source: 'municipios',
+                layout: {
+                    "text-field": ['get', 'nomgeo'],
+                    "text-size": 10.5
+                }
+            });
+        });
+
+        return () => {
+            mapRef.current.remove()
+        }
+    }, [])
+
+
+    useEffect(() => {
+        if (!mapRef.current) return;
+        if (!mapRef.current.getLayer('municipal-limits')) return;
+        if (!mapRef.current.getLayer('municipal-labels')) return;
+
+        mapRef.current.setFilter(
+            'municipal-limits',
+            ['==', ['get', 'cve_ent'], selectedState]
+        );
+
+        mapRef.current.setFilter(
+            'municipal-labels',
+            ['==', ['get', 'cve_ent'], selectedState]
+        );
+
+        const bounds = state_bounds[selectedState];
+
+        if (!bounds) return;
+
+        mapRef.current.fitBounds(bounds, {
+            padding: 30,
+            duration: 1500
+        });
+
+    }, [selectedState]);
+
+    return <div id="map-container" ref={mapContainerRef}></div>
+}
+
+export default Map;
+```
+
+## Create Population Choropleths
+
+With the basic map functionality in place, we are ready to add some data and use the map to display it. We are going to show the top ten Indigenous groups by population in each state, and display the population of each group by municipality, with a color code to show the variation in population across municipalities.
+
+## Get and Shape the Data
+
+We will get the data from the [website of the former Mexican Council for Humanities, Sciences, and Technology](https://cultura.conahcyt.mx/pueblosindigenas/) (CONAHCYT). The Council has since been folded into the newer agency SECIHTI, the Secreatariat for Scinece, Humanities, Technology, and Innovation, but the older CONAHCYT website is still available.
+
+On the page linked above, near the top, you will see a map entitled "Pueblos indígenas y su contexto", with a blue button labeled "Descargar datos". Clicking on that link will download the source data for the map, a file called `pueblos_indigenas_contexto.zip`. Unzip the file and you will see three folders: one for layers, one for tables, and one for metadata. We will use the layer file called `pciaf_pob_indigena_residentes_20_loc_p.geojson`.
+
+We're going to go back to our Python notebook for a while. It may be helpful to start a new notebook so we don't have stale variables hanging around. Our first task will ge to load the new JSON file. We'll also need data from our existing `muni-limits.json` file. In this example, the source file for Indigenous population has been renamed to have a `.json` file ending.
+
+```python
+import geopandas as gpd
+
+gdf = gpd.read_file('pciaf_pob_indigena_residentes_20_loc_p.json')
+municipios = gpd.read_file('muni-limits.json')
+```
+
+In the source data, Indigenous population is broken down by *localidad*, which is one step more granular than *municipio*. Our first step will be to use geopandas to group the data by municipio instead of localidad, so we can find the total population by municipio.
+
+```python
+df = (
+    gdf
+    .groupby(
+        ["cve_ent", "cve_mun", "nom_mun", "clave_pueblo", "nombre_pueblo"],
+        as_index=False
+    )["pihogares"]
+    .sum()
+)
+```
+
+We are going to visualize the population of each Indigenous group by showing colors with different opacities, with the darkest representing higher population, and the lightest showing the least population. As our baseline for 100% opacity, we'll select the municipio in each state that has the highest population of any given group. Other opacities will be represented as percentages of that baseline. To this end, we have to find the municipio with the highest population of each group in each state, and record that population number.
+
+```python
+group_max = (
+    df
+    .groupby(["cve_ent", "clave_pueblo"], as_index=False)["pihogares"]
+    .max()
+    .rename(columns={"pihogares": "group_max"})
+)
+```
+
+We'll then merge that data back into our main data frame.
+
+```python
+df = df.merge(
+    group_max,
+    on=["cve_ent", "clave_pueblo"],
+    how="left"
+)
+```
+
+Now we can calculate the percentage for each Indigenous group in each municipio. This will be the number that controls the opacity in our choropleths.
+
+```python
+df["pct_max"] = (
+    df["pihogares"] / df["group_max"] * 100
+)
+```
+
+Finally, we'll create a new JSON file that has the Indigenous population data merged with our GeoJSON file of municipal boundaries.
+
+```python
+merged = municipios.merge(
+    df,
+    on=["cve_ent", "cve_mun"],
+    how="left"
+)
+
+merged.to_file('mex-indig-pop.json', driver="GeoJSON")
+```
+
+We'll make sure this file is in our project's `src/data` directory.
+
+![Place the file in the data directory](markdown-images/choropleths-1.png "The file with Mexican Indigenous population by municipio in the data directory")
+
+For this project, we will only show ten Indigenous groups for each state. For each state, we'll calculate the ten groups with the highest population in that state. First we'll create a data frame with the totals for each group.
+
+```python
+group_totals = (
+    gdf
+    .groupby(["cve_ent", "clave_pueblo", "nombre_pueblo"], as_index=False)["pihogares"]
+    .sum()
+)
+```
+
+To make it easier to shape the data the way we want, we'll drop the default data frame index. This will force the first column, which is the municipal code, to be the index.
+
+```python
+group_totals = group_totals.reset_index(drop=True)
+```
+
+Now we'll create a Python dictionary with each state's ten Indigenous groups with the highest population. We are going to force the municipio codes to be strings, since this is how they are currently formated in our application. The result will be a JSON-compatible data structure that JavaScript can read as an object.
+
+```python
+top_ten_per_state = {}
+
+for idx, group in group_totals.groupby("cve_ent"):
+    top10 = (
+        group
+        .sort_values("pihogares", ascending=False)
+        .head(10)
+        .reset_index(drop=True)
+    )
+         
+    top_ten_per_state[idx] = [
+        {
+            "code": str(row["clave_pueblo"]),
+            "name": row["nombre_pueblo"]
+        }
+        for i, row in top10.iterrows()
+    ]
+```
+
+This data structure should look this:
+
+```json
+{'01': [{'code': '211', 'name': 'Náhuatl'},
+  {'code': '502', 'name': 'Jñatrjo/Mazahua'},
+  {'code': '513', 'name': 'Binnizá/Zapoteco'},
+  {'code': '501', 'name': 'Otomí'},
+  {'code': '516', 'name': 'Na savi/Ñuu Saavi/Mixteco'},
+  {'code': '602', 'name': 'Mayaʾwiinik/Maya'},
+  {'code': '210', 'name': 'Wixárika/Huichol'},
+  {'code': '701', 'name': 'Totonaco'},
+  {'code': '801', 'name': 'Purépecha/Pʾurhépecha/Pʾurhé/Tarasco'},
+  {'code': '901', 'name': 'Ayuuk/Ayook/Mixe'}],
+  // ...
+```
+
+We can now export the data structure as a JSON file:
+
+```python
+import json
+
+with open("state-groups.json", "w", encoding="utf-8") as f:
+    json.dump(top_ten_per_state, f, ensure_ascii=False, indent=2)
+```
+
+Ensure that the resulting file is in our data directory.
+
+![Place the file in the data directory](markdown-images/choropleths-2.png "The file with the ten groups that will be represnted in each state in the data directory")
+
+### Showing the Second Dropdown
+
+Now, every time the user selects a state, we want to show a second dropdown offering a selection of Indigenous groups. Eventually, the map will change its display depending on the group selected. For now, let's get the dropdown showing correctly.
+
+We'll start by importing the data we will use to generate our dropdown: the lists of the ten groups in each state that we will show data for. At the top, with all the other import statements, we'll add: `import groupsByState from './data/state-groups.json';`. This will bring in our JSON as a variable called `groupsByState`.
+
+Then we'll set up a piece of state to track the groups that are currently selected. These consist of groups for a given state, so we can call it `stateGroups`. Our initial state will be an empty array: `const [stateGroups, setStateGroups] = useState([]);`.
+
+Now, every time a new state is selected, we need to change the groups that are selected. This means we need a `useEffect` set to trigger every time the `selectedState` piece of state changes. First we need to import `useEffect`, since we are not currently using it in our `App.jsx`: `import { useState, useEffect } from "react";`.
+
+Now we can write our `useEffect`:
+
+```jsx
+useEffect(() => {
+        const groups = groupsByState[selectedState] || [];
+       
+         const newGroups = groups.map((group, i) => ({
+            ...group,
+            active: i === 0
+        }));
+        
+        setStateGroups(newGroups);
+        }, [selectedState]);
+```
+
+We know that `selectedState` is a Mexican geographic code representing a state, and that it is a string. In our `state-groups.json` file, we used the corresponding codes as the keys for each list. So we can retrieve the list of groups corresponding to our selected state with `const groups = groupsByState[selectedState] || [];`, leaving an empty array as a failsafe in case the code is an error and does not retrieve anything.
+
+Then, we loop over the groups in the appropriate list. The only change we make is we add an `active` property. Initially, we set its value to the expression `i === 0`, which means for the first element in the list it will be set to true, and for all the rest it will be set to false. Later, this will change when the user makes selections from the dropdown, and we will use the `active: true` property to decide what data to display on the map.
+
+Finally, we set the `stateGroups` piece of state to the new value. We set this hook to run every time a new state is selected.
+
+In our `handleChange` event handler, we can now remove the console log, which no longer serves any purpose.
+
+Now we can add a second instance of our Dropdown component. We are going to need to arrange them together, so we'll wrap them in a div.
+
+```jsx
+<div id="dropdowns">
+    <Dropdown
+        options={states}
+        id="state"
+        selectedValue={selectedState}
+        onChange={handleChange}
+    />
+    <Dropdown
+    />
+</div>
+```
+
+Our second dropdown should only show up after the user has selected a state, so we will make its visibility dependent on a truthy value for `selectedState`.
+
+```jsx
+ {selectedState && <Dropdown
+               
+           />}
+```
+
+Now we can fill in the second dropdown's props. Its options will be the list of groups corresponding to the selected state, which we've put into the `stateGroups` piece of state. For an id, we'll put down "group".
+
+```jsx
+{selectedState && <Dropdown
+                options={stateGroups}
+                id="group"
+           />}
+```
+
+For the value, we'll search through our `stateGroups` piece of state for the group with the `active: true` property set, using an empty string as the fallback in case none is found.
+
+```jsx
+{selectedState && <Dropdown
+                options={stateGroups}
+                id='group'
+                selectedValue={stateGroups.find(group => group.active)?.code || ""}
+           />}
+```
+
+For the `onChange` prop, we'll create a new handler:
+
+```jsx
+const handleGroupChange = e => {
+        const code = e.target.value;
+        setStateGroups(prev => prev.map(group => ({
+            ...group,
+            active: group.code === code
+        })));
+    }
+```
+
+Here, we are using React's built-in `prev` variable to grab the previous list, that is, the currently selected list. Then we will go through it and alter the group that has the `active: true` property set and return the new list.
+
+We can now pass that handler to our second Dropdown component:
+
+```jsx
+{selectedState && <Dropdown
+                options={stateGroups}
+                id='group'
+                selectedValue={stateGroups.find(group => group.active)?.code || ""}
+                onChange={handleGroupChange}
+           />}
+```
+
+With all this done, the second dropdown will now appear when a state is selected, and it will be populated with the correct list of groups.
+
+Here is the current state of our `App.jsx` file:
+
+`App.jsx`:
+```jsx
+import { useState, useEffect } from "react";
+import Map from "./components/Map";
+import './css/App.css';
+import states from './data/mex-states.json';
+import Dropdown from "./components/Dropdown";
+import groupsByState from './data/state-groups.json';
+
+function App(){
+    const [selectedState, setSelectedState] = useState("");
+    const [stateGroups, setStateGroups] = useState([]);
+
+    useEffect(() => {
+        const groups = groupsByState[selectedState] || [];
+
+         const newGroups = groups.map((group, i) => ({
+            ...group,
+            active: i === 0
+        }));
+
+        setStateGroups(newGroups);
+        }, [selectedState]);
+
+
+    const handleChange = (e) => {
+        setSelectedState(e.target.value);
+    }
+
+    const handleGroupChange = e => {
+        const code = e.target.value;
+        setStateGroups(prev => prev.map(group => ({
+            ...group,
+            active: group.code === code
+        })));
+    }
+
+    return <div id="page-wrapper">
+       <div id="dropdowns">
+           <Dropdown
+               options={states}
+               id="state"
+               selectedValue={selectedState}
+               onChange={handleChange}
+           />
+           {selectedState && <Dropdown
+                options={stateGroups}
+                id='group'
+                selectedValue={stateGroups.find(group => group.active)?.code || ""}
+                onChange={handleGroupChange}
+           />}
+       </div>
+       <Map selectedState={selectedState} />
+    </div>
+}
+
+export default App;
+```
+
+There is a problem though. The style that we applied when we had only one dropdown is causing both dropdowns to appear in the same place. This is the absolute positioning we applied. We now have to revise the style sheets a bit to display the dropdowns properly.
+
+### Revise Dropdown Styles
+
+First we are going to use the `#dropdowns` div that we created earlier. We will take the absolute positioning formerly applied to the individual Dropdown component, and we'll move it to this wrapper div. This way the dropdowns will stop overlapping.
+
+`App.css`:
+```css
+#dropdowns {
+    position: absolute;
+    top: 0.7rem;
+    left: 0.7rem;
+    padding: 0.2rem;
+    display: flex;
+    flex-flow: column nowrap;
+    gap: 0.7rem;
+}
+```
+
+In addition to transferring the positioning rule, we're making this wrapper element a flex parent and directing its children to appear in column layout with a gap of 0.7 rem between them.
+
+Next we will need to add a wrapper to our `select` elements in order to avoid issues with our custom dropdown arrow. Currently, the position of that arrow is pinned to the `select-and-label` div that wraps the `label` and `select` elements together and acts as their flex parents. The problem with this is that now, both `select-and-label` divs will be flex children of the `#dropdowns` div. This will make them occupy the same width. But the dropdown `select` elements themselves will have the width of their widest options. This will give them different widths, but the arrows will occupy the same position for both since they are pinned to the wrapper, not the dropdown itself. One of them will be inside its dropdown, the other one will just appear to hang outside. To avoid this, we'll pin the arrow to this new wrapper div.
+
+`Dropdown.jsx`:
+```jsx
+<div className='select-wrapper'>
+    //... <select> element here
+</div>
+```
+
+With this in place, we can revise our `Dropdown.css` style sheet.
+
+First, remove the absolute positioning from the `.select-and-label` class, since we've moved this over to the `#dropdowns` element in the App component. We can also add a `gap` property to better customize the distance between the label and the dropdown.
+
+`Dropdown.css`:
+```css
+.select-and-label {
+    display: flex;
+    flex-flow: column nowrap;
+    align-items: center;
+    gap: 0.2rem;
+    z-index: 1;
+    font-family: Helvetica, "Helvetica Neue", sans-serif;
+    --select-border: #777;
+}
+```
+
+With this change, the two dropdowns should be visible instead of overlapping. But the dropdown arrow is incorrectly positioned. We'll give the `select-wrapper` class relative positioning, so that the pseudo-element will be positioned absolutely in relation to its wrapper.
+css
+```
+.select-wrapper {
+    position: relative;
+}
+```
+
+Finally, we move the pseudo-element off of the `select-and-label` class and onto the `select-wrapper` class and alter its position slightly:
+
+```css
+.select-wrapper::after {
+    content: "";
+    position: absolute;
+    right: 0.75rem;
+    top: 50%;
+    transform: translateY(-50%);
+    width: 0.8em;
+    height: 0.5em;
+    background-color: var(--select-border);
+    clip-path: polygon(100% 0%, 0 0%, 50% 100%);
+    pointer-events: none;
+}
+```
+
+The dropdowns are now appearing correctly, and their custom arrows are correctly positioned.
+
+We can also pause to make a little adjustment to the labels, since they can sometimes be hard to see when they overlap map labels. We can give them a light background.
+
+```css
+label {
+    padding: 0.2rem 0.7rem;
+    border: none;
+    border-radius: 0.5rem;
+    background-color: #f9f9f9b3;
+}
+```
+
+We're finally ready to receive the user's group selection and display the corresponding population data on the map.
+
+### Display the Choropleths
+
+The first thing we need to do is pass the new piece of state to the Map component.
+
+`App.jsx`:
+```jsx
+<Map selectedState={selectedState} groupList={stateGroups} />
+```
+
+Remember, at any given moment the list of groups has ten groups, and each list will have a single group marked as active.
+
+In the Map component, we can receive the prop and retrieve the currently active group. We can create a console log to verify that it's working correctly.
+
+`Map.jsx`:
+```jsx
+function Map({ selectedState, groupList }){
+    const mapRef = useRef(null);
+    const mapContainerRef = useRef(null);
+
+    const activeGroup = groupList.find(group => group.active);
+
+    console.log(activeGroup);
+    //.. rest of Map component
+```
+
+Now, you should see the currently selected group in the console whenever a new state is selected or a new group is selected. It should be an object that contains the groups code and name, as well as an `active: true` property.
+
+Our next step is to retrieve the data and add it as a source in our map whenver the map loads. We can add this import statement: `import pop_data from '../data/mex-indig-pop.json';`. Then, inside the `mapRef.current.on('load', () => {` function, we can add another data source:
+
+```jsx
+mapRef.current.addSource('population', {
+              type: 'geojson',
+              data: pop_data 
+           });
+```
+
+We're ready to add a layer that displays the population data with color codes. But we'll need to add a list of colors to use. We'll use this constant, which we can define in the App component, but outside the App function:
+
+```jsx
+const COLORS = [
+    "#8B4513", "#2E8B57", "#4169E1", "#D2691E",
+    "#8A2BE2", "#B22222", "#20B2AA", "#CD853F",
+    "#556B2F", "#FF8C00"
+];
+```
+
+In our `useEffect` hook, where we create the groups state, we can add a color property to each group.
+
+```jsx
+const newGroups = groups.map((group, i) => ({
+            ...group,
+            color: COLORS[i], 
+            active: i === 0
+        }));
+```
+
+You should now see a color code displayed with each console log, for example:
+
+```js
+{
+  "code": "507",
+  "name": "Chinanteco",
+  "color": "#8A2BE2",
+  "active": true
+}
+```
+
+Basing ourselves on our population source, we can now add a layer. We have previously seen line and symbol layers. Now we are encountering a third type of layer, the fill layer. There are many other [types of layers](https://docs.mapbox.com/style-spec/reference/layers/#type) including raster layers, circle layers, hillshade layers, heatmap layers, and various others.
+
+As a reminder, each type of layer has its own set of sub-properties. Layers have two sub-properties that determine the way their data is rendered, the layout and paint properties. In turn each type of layer has specific sub-properties to their layout and paint properties. A [fill layer](https://docs.mapbox.com/style-spec/reference/layers/#fill) renders polygons with custom paint properties.
+
+The fill layer paint properties that interest us here are `fill-color` and `fill-opacity`. We will be using specific fill colors with different opacities. The [fill-opacity property](https://docs.mapbox.com/style-spec/reference/layers/#paint-fill-fill-opacity) accepts an [interpolate expression](https://docs.mapbox.com/style-spec/reference/expressions/#interpolate). Interpolations can be linear, exponential with specified bases, or cubic bezier. Here we are using a slightly exponential interpolation to create gradations between specified stop points representing percentages and based on the `pct_max` value we created earlier for each Indigenous population in each municipio.
+
+Our startup We'll start it out with a transparent fill color since there is no active group selected when the map first loads. If we didn't do this, the default would be all-black fill for every municipio. We'll set the fill opacity later in a different `useEffect` hook when the user selects a state or a group from the dropdown.
+
+```jsx
+mapRef.current.addLayer({
+    id: "population",
+    type: "fill",
+    source: "population",
+    paint: {
+        "fill-color": "rgba(255, 0, 0, 0)",
+    }
+});
+```
+
+In order to respond to the user's choices of states and groups, we create another `useEffect` hook that triggers when either the `selectedState` or the `groupList` are modified.
+
+```jsx
+useEffect(()=>{
+        if (!mapRef.current) return;
+        if (!activeGroup || !selectedState) return;
+        if (!mapRef.current.getLayer('population')) return;
+
+        mapRef.current.setFilter('population', [
+            "all",
+            ["==", ["get", "cve_ent"], selectedState],
+            ["==", ["get", "clave_pueblo"], Number(activeGroup.code)]
+        ]);
+
+        mapRef.current.setPaintProperty(
+            "population",
+            "fill-color",
+            activeGroup.color
+        );
+    
+        mapRef.current.setPaintProperty(
+                "population",
+                "fill-opacity",
+                [
+                    "interpolate",
+                    ["exponential", 1.2],
+                    ["coalesce", ["get", "pct_max"], 0],
+                    0, 0,
+                    1, 0.2,
+                    20, 0.35,
+                    40, 0.5,
+                    60, 0.65,
+                    80, 0.8,
+                    100, 0.95]
+            );
+    }, [selectedState, groupList])
+```
+
+We first include the usual failsafes so that the hook does not trigger if any of the required variables or layers are not present.
+
+Next, we filter the population layer to match the user's selected state and groups.
+
+Finally, we customize the layer's paint property. We change its color to match the color set for that group when we created the layer configuration objects (in the `groupList` piece of state). Then we add an opacity property with an interpolation expression based on the pct_max property.
+
+We now have choropleths displaying showing the population of each Indigenous group in each municipio, in relation to the municipio in that state that has the largest population of that specific group.
+
+![Show the choropleths](markdown-images/choropleths-3.png "A map of Oaxaca showing different populations of Zapotec people in different municipalities")
+
+## Informational Popups
+
+Our final component will be a popup that shows the actual population numbers when the user hovers or clicks on a municipio.
+
+### Set Up the Event Handlers
+
+Let's see what kind of information we get from user interactions on our population layer polygons. Let's set up an event handler in our Map component. While we're at it we can do some cleanup: we dont need `console.log(activeGroup)` any more. We'll delete that, and right in its place put our handler:
+
+```jsx
+const handlePolygonClick = e => {
+        console.log(e);
+    }
+```
+
+At the bottom of the `mapRef.current.on('load', () => {}` function, we'll add the click handler on our population layer, right after creating the layer itself: `mapRef.current.on('click', 'population', handlePolygonClick);`. Now, when we activate the population layer by selecting a state, then click on any municipio, we should see the event object displayed in the console.
+
+![Examine the output of a click event](markdown-images/popups-1.png "A Mapbox map with the console showing an event object")
+
+We can see that the event object has a `lngLat` property. This looks like an object with two properties representing the location the user clicked on. There is also a `features` property, which is an array with one element. Let's inspect that.
+
+```jsx
+const handlePolygonClick = e => {
+        console.log(e.features[0]);
+    }
+```
+
+![Examine the feature array element](markdown-images/popups-2.png "A Mapbox map with the console showing a feature element")
+
+We can see that this contains information from the source GeoJSON feature, as well as information on the Mapbox layer that is rendering the data. The feature object has a properties sub-property, and that properties object has data from our source GeoJSON, including the name of the municipio, the name of the Indigenous group, and the `pihogares`, which is the population of that group in that municipio.
+
+```jsx
+const handlePolygonClick = e => {
+        console.log(e.features[0].properties);
+    }
+```
+
+![Examine the feature properties](markdown-images/popups-3.png "A Mapbox map with the console showing a feature properties object")
+
+We can test the same functionality for a mouseenter event.
+
+```jsx
+const handlePolygonMouseEnter = e => {
+        console.log(e.features[0].properties);
+    }
+```
+
+```jsx
+mapRef.current.on('mouseenter', 'population', handlePolygonMouseEnter);
+```
+
+We can do the same for mouseleave.
+
+```jsx
+const handlePolygonMouseLeave = e => {
+        console.log("Mouse left!");
+    }
+```
+
+```jsx
+mapRef.current.on('mouseleave', 'population', handlePolygonMouseLeave);
+```
+
+We should now see appropriate console logs when the mouse enters a municipio and leaves it.
+
+![Get the mouse hover events](markdown-images/popups-4.png "Console logs reflecting mouse activity on Mapbox polygons")
+
+### Set Up the Popup Component
+
+The popup will be a separate component. We will create it as a child of the Map component. So the first thing we do is create an empty Popup component.
+
+`src/components/Popup.jsx`
+```jsx
+function Popup(){
+    return (
+        <div>
+            Hola!
+        </div>
+    )
+}
+
+export default Popup;
+```
+
+Then, we will import it into our Map component. We'll set it as a child of our map container and pass it a reference to the map object. The import statement will be `import Popup from "./Popup";`. Then, instead of `return <div id="map-container" ref={mapContainerRef}></div>`, our JSX return will be:
+
+`Map.jsx`:
+```jsx
+return <div id="map-container" ref={mapContainerRef}>
+        <Popup mapRef={mapRef} />
+    </div>
+```
+
+Let's add a piece of state to contain current popup data, and pass that to the Popup component as well. We'll need to import `useState` since we haven't used it yet in the Map component: `import { useEffect, useRef, useState } from "react";`. Then, inside the Map function: `const [popupData, setPopupData] = useState(null);`. Now we can modify the click handler. In addition to the feature properties, we are going to need to get the longitude and latitude of the point clicked or hovered on. Without a coordinate specified, the popup does not appear on the map.
+
+```jsx
+const handlePolygonClick = e => {
+        setPopupData({
+            lngLat: e.lngLat,
+            properties: e.features[0].properties
+        });
+    }
+```
+
+And we can pass the data to the Popup component:
+
+```jsx
+return <div id="map-container" ref={mapContainerRef}>
+        <Popup mapRef={mapRef} popupData={popupData} />
+    </div>
+```
+
+Now we can modify the Popup component to show an actual Popup. First we are going to need the appropriate imports. We'll need a `useEffect` to trigger the popup to show when the popup data changes. We'll also need `useRef` to hold references to the popup and its container. Since popups are Mapbox objects, we'll need to import the Mapbox GL JS library. And we are going to use a ReactDOM portal as a way to hand over control of the popup to Mapbox, rather than controling its location ourselves.
+
+`Popup.jsx`:
+```jsx
+import {useEffect, useRef} from "react";
+import {createPortal} from "react-dom";
+import mapboxgl from "mapbox-gl";
+```
+
+Now we will receive the map reference and popup data from the parent Map element. Then we'll create a reference to a new popup object. We'll also create a div to contain it (and eventually hand it over to Mapbox), and create a reference to that too.
+
+```jsx
+function Popup({ popupData, mapRef }){
+
+    const popupRef = useRef(new mapboxgl.Popup())
+    const containerRef = useRef(document.createElement('div'));
+    
+    return (
+            <div>
+                Hola!
+            </div>
+        )
+    }
+
+export default Popup;
+```
+
+Next, we'll create our `useEffect` hook. First we'll make sure the effect does not run until there is a map reference. This will avoid any problems with asynchronous loads triggering the effect before the map reference exists. Then, we'll use object destructuring to get access to the coordinate data that we passed in from the Map component. Remember that this popup data is currently set in the click event handler.
+
+The next step is the most critical. We use [Mapbox Popup methods](https://docs.mapbox.com/mapbox-gl-js/api/markers/#popup) to set the location of the popup on the map (`.setLngLat`), to set the popup's content (`.setDOMContent`), and then add it to the map. Using `setDOMContent` instead of `setHTML` allows us to create the content elsewhere and just refer to it here, which is a bit cleaner, though slightly more complex.
+
+We end with a usual `useEffect` cleanup function, and set the hook to run whenver there is a change in the map or in the popup data.
+
+```jsx
+function Popup({ popupData, mapRef }){
+
+    const popupRef = useRef(new mapboxgl.Popup())
+    const containerRef = useRef(document.createElement('div'));
+
+    useEffect(() => {
+            // wait for map to initialize
+            if (!mapRef.current) return 
+    
+            const { lngLat } = popupData;
+    
+            popupRef.current
+                .setLngLat(lngLat)
+                .setDOMContent(containerRef.current)
+                .addTo(mapRef.current)
+    
+            // cleanup function to remove popup on unmount
+            return () => popupRef.current.remove()
+    
+        }, [mapRef, popupData]);
+    
+    return (
+            <div>
+                Hola!
+            </div>
+        )
+    }
+
+export default Popup;
+```
+
+We need to do one more thing to have the popup show on the page. In our JSX return, instead of just returning a div, we'll create a portal and return our container reference. Since we earlier set the popup content to the container reference, this will hand off the popup to Mapbox.
+
+```jsx
+return createPortal(
+        <div>
+            Hola!
+        </div>,
+        containerRef.current
+    );
+```
+
+You should now see the popup whenver you click on the map.
+
+![Show the popup](markdown-images/popups-5.png "A popup appearing on a map")
+
+### Adding Popup Content
+
+Now it is relatively straightforward to customize the popup content. We'll destructure the properties object and use it to populate data in the popup.
+
+```jsx
+    const { properties } = popupData;
+
+    return createPortal(
+        <div>
+            <h3>Municipality:</h3>
+            <p>{properties.nom_mun}</p>
+            <h3>People:</h3>
+            <p>{properties.nombre_pueblo}</p>
+            <h3>Population:</h3>
+            <p>{properties.pihogares}</p>
+        </div>,
+        containerRef.current
+    );
+```
+
+It's also best practice to add some defensive measures that will protect against errors in case there are problems with the popup data. In the `useEffect`, just under the `if (!mapRef.current) return`:
+
+```jsx
+ if (!popupData) {
+            popupRef.current.remove()
+            return
+        }
+```
+
+And outside the `useEffect`, just above the properties object destructure: `if (!popupData) return null`.
+
+### Setting up the Mousemove Popup
+
+We'll finish our project by setting the popup to follow the user's mouse movements. To do this, we'll replace the earlier mouseenter event with a mousemove event.
+
+`Map.jsx`:
+```jsx
+ const handlePolygonMouseMove = e => {
+        setPopupData({
+            lngLat: e.lngLat,
+            properties: e.features[0].properties
+        });
+    }
+
+  const handlePolygonMouseLeave = e => {
+        setPopupData(null);
+    } 
+
+   useEffect(() => {
+       //...useEffect contents
+       mapRef.current.on('click', 'population', handlePolygonClick);
+       mapRef.current.on('mousemove', 'population', handlePolygonMouseMove);
+       mapRef.current.on('mouseleave', 'population', handlePolygonMouseLeave);
+```
+
+This will work well, but we can make one last improvement, moving the cleanup function to its own `useEffect`. Otherwise the popup vanishes and reappears every time the user moves the mouse, which creates a subtle flicker effect.
+
+`Popup.jsx`:
+```jsx
+useEffect(() => {
+        if (!mapRef.current) return // wait for map to initialize
+
+        if (!popupData) {
+            popupRef.current.remove()
+            return
+        }
+
+        const { lngLat } = popupData;
+
+        popupRef.current
+            .setLngLat(lngLat)
+            .setDOMContent(containerRef.current)
+            .addTo(mapRef.current)
+
+    }, [mapRef, popupData]);
+
+    useEffect(() => {
+        return () => popupRef.current.remove();
+    }, []);
+```
+
+We could develop it much further, of course. We could refine the popup appearance, create a title and some information for the user, modify the appearance when the map first loads, test the mobile UX, improve the data pre-processing, refine the interpolation that generates the color curve, or explore other ways to generate a choropleth. But that's good for now!
+
+This project demonstrated how to create a React app, how to bring in a Mapbox map, how to add data to the map, how to use layers to visualize the data, and how to add popups to display the data.
+
+
+
+
+
+
+
+
+
+
+
