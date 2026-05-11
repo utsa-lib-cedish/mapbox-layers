@@ -22,12 +22,15 @@ function Map({ selectedState, groupList }) {
         });
     }
 
-    const handlePolygonMouseEnter = e => {
-        console.log(e.features[0].properties);
+    const handlePolygonMouseMove = e => {
+        setPopupData({
+            lngLat: e.lngLat,
+            properties: e.features[0].properties
+        });
     }
 
     const handlePolygonMouseLeave = e => {
-        console.log("Mouse left!");
+        setPopupData(null);
     }
 
     useEffect(() => {
@@ -79,7 +82,7 @@ function Map({ selectedState, groupList }) {
            });
 
            mapRef.current.on('click', 'population', handlePolygonClick);
-           mapRef.current.on('mouseenter', 'population', handlePolygonMouseEnter);
+           mapRef.current.on('mousemove', 'population', handlePolygonMouseMove);
            mapRef.current.on('mouseleave', 'population', handlePolygonMouseLeave);
         });
 

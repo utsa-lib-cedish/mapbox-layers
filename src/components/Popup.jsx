@@ -22,10 +22,11 @@ function Popup({ popupData, mapRef }){
             .setDOMContent(containerRef.current)
             .addTo(mapRef.current)
 
-        // cleanup function to remove popup on unmount
-        return () => popupRef.current.remove()
-
     }, [mapRef, popupData]);
+
+    useEffect(() => {
+        return () => popupRef.current.remove();
+    }, []);
 
     if (!popupData) return null;
 
