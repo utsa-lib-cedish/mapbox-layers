@@ -6,7 +6,7 @@ import municipios from '../data/muni-limits.json';
 import state_bounds from '../data/state-bounds.json';
 import pop_data from '../data/mex-indig-pop.json';
 
-function Map({ selectedState, groupList }){
+function Map({ selectedState, groupList }) {
     const mapRef = useRef(null);
     const mapContainerRef = useRef(null);
 
@@ -24,15 +24,15 @@ function Map({ selectedState, groupList }){
         });
 
         mapRef.current.on('load', () => {
-           mapRef.current.addSource('municipios', {
-               type: 'geojson',
-               data: municipios
-           });
+            mapRef.current.addSource('municipios', {
+                type: 'geojson',
+                data: municipios
+            });
 
-           mapRef.current.addSource('population', {
-               type: 'geojson',
-               data: pop_data
-           });
+            mapRef.current.addSource('population', {
+                type: 'geojson',
+                data: pop_data
+            });
 
             mapRef.current.addLayer({
                 id: 'municipal-limits',
@@ -53,11 +53,21 @@ function Map({ selectedState, groupList }){
                 }
             });
 
-        return () => {
-            mapRef.current.remove()
-        }
-    }, [])
+            mapRef.current.addLayer({
+                id: "population",
+                type: "fill",
+                source: "population",
+                paint: {
+                    "fill-color": "rgba(255, 0, 0, 0)"
+                }
+           });
 
+            return () => {
+                mapRef.current.remove()
+            }
+        });
+
+    }, []);
 
     useEffect(() => {
         if (!mapRef.current) return;
@@ -83,7 +93,44 @@ function Map({ selectedState, groupList }){
             duration: 1500
         });
 
+
     }, [selectedState]);
+
+    useEffect(()=>{
+        if (!mapRef.current) return;
+        if (!activeGroup || !selectedState) return;
+        if (!mapRef.current.getLayer('population')) return;
+
+        mapRef.current.setFilter('population', [
+            "all",
+            ["==", ["get", "cve_ent"], selectedState],
+            ["==", ["get", "clave_pueblo"], Number(activeGroup.code)]
+        ]);
+
+        mapRef.current.setPaintProperty(
+            "population",
+            "fill-color",
+            activeGroup.color
+        );
+
+        mapRef.current.setPaintProperty(
+            "population",
+            "fill-opacity",
+            [
+                "interpolate",
+                ["exponential", 1.2],
+                ["coalesce", ["get", "pct_max"], 0],
+                0, 0,
+                1, 0.2,
+                20, 0.35,
+                40, 0.5,
+                60, 0.65,
+                80, 0.8,
+                100, 0.95]
+        );
+    }, [selectedState, groupList]);
+
+
 
     return <div id="map-container" ref={mapContainerRef}></div>
 }

@@ -5,6 +5,12 @@ import states from './data/mex-states.json';
 import Dropdown from "./components/Dropdown";
 import groupsByState from './data/state-groups.json';
 
+const COLORS = [
+    "#8B4513", "#2E8B57", "#4169E1", "#D2691E",
+    "#8A2BE2", "#B22222", "#20B2AA", "#CD853F",
+    "#556B2F", "#FF8C00"
+];
+
 function App(){
     const [selectedState, setSelectedState] = useState("");
     const [stateGroups, setStateGroups] = useState([]);
@@ -14,6 +20,7 @@ function App(){
 
          const newGroups = groups.map((group, i) => ({
             ...group,
+            color: COLORS[i],
             active: i === 0
         }));
 
