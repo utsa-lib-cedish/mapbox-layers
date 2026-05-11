@@ -1,18 +1,31 @@
-import { useEffect, useRef} from "react";
+import { useEffect, useRef, useState } from "react";
 import mapboxgl from 'mapbox-gl';
 import 'mapbox-gl/dist/mapbox-gl.css';
 import '../css/Map.css';
 import municipios from '../data/muni-limits.json';
 import state_bounds from '../data/state-bounds.json';
 import pop_data from '../data/mex-indig-pop.json';
+import Popup from "./Popup";
 
 function Map({ selectedState, groupList }) {
     const mapRef = useRef(null);
     const mapContainerRef = useRef(null);
 
+    const [popupData, setPopupData] = useState(null);
+
     const activeGroup = groupList.find(group => group.active);
 
-    console.log(activeGroup);
+    const handlePolygonClick = e => {
+        setPopupData(e.features[0].properties);
+    }
+
+    const handlePolygonMouseEnter = e => {
+        console.log(e.features[0].properties);
+    }
+
+    const handlePolygonMouseLeave = e => {
+        console.log("Mouse left!");
+    }
 
     useEffect(() => {
         mapboxgl.accessToken = import.meta.env.VITE_MAPBOX_TOKEN;
@@ -62,11 +75,14 @@ function Map({ selectedState, groupList }) {
                 }
            });
 
-            return () => {
-                mapRef.current.remove()
-            }
+           mapRef.current.on('click', 'population', handlePolygonClick);
+           mapRef.current.on('mouseenter', 'population', handlePolygonMouseEnter);
+           mapRef.current.on('mouseleave', 'population', handlePolygonMouseLeave);
         });
 
+        return () => {
+            mapRef.current.remove()
+        }
     }, []);
 
     useEffect(() => {
@@ -132,7 +148,9 @@ function Map({ selectedState, groupList }) {
 
 
 
-    return <div id="map-container" ref={mapContainerRef}></div>
+    return <div id="map-container" ref={mapContainerRef}>
+        <Popup mapRef={mapRef} popupData={popupData} />
+    </div>
 }
 
 export default Map;
