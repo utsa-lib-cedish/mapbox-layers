@@ -4,6 +4,8 @@ In this project, we will learn how to use layers to display demographic data in 
 
 This project is based on Mapbox's tutorial on [using checkboxes to toggle layers in a React app](https://docs.mapbox.com/help/tutorials/react-toggle-layers/?step=0).
 
+[See a working example](https://utsa-lib-cedish.github.io/mapbox-layers/).
+
 ## Start a React Project
 
 Start with an empty project in your IDE of choice. We'll use the **vite** development server to spin up a React project structure. Run `npm create vite@latest`. The Vite create project dialog opens. First, Node JS asks if it is OK to install the Vite package. Say yes.
