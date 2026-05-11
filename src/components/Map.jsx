@@ -16,7 +16,10 @@ function Map({ selectedState, groupList }) {
     const activeGroup = groupList.find(group => group.active);
 
     const handlePolygonClick = e => {
-        setPopupData(e.features[0].properties);
+        setPopupData({
+            lngLat: e.lngLat,
+            properties: e.features[0].properties
+        });
     }
 
     const handlePolygonMouseEnter = e => {
