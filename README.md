@@ -6,17 +6,35 @@ This project is based on Mapbox's tutorial on [using checkboxes to toggle layers
 
 [See a working example](https://utsa-lib-cedish.github.io/mapbox-layers/).
 
+## Table of Contents
+- [Start a React Project](#start-a-react-project)
+- [Get React Working](#get-react-working)
+- [Create App and Map Components](#create-app-and-map-components)
+  - [The App Component](#the-app-component)
+  - [The Mapbox Token](#the-mapbox-token)
+  - [The Map Component](#the-map-component)
+  - [Give the Map Width and Height](#give-the-map-width-and-height)
+  - [Render the Map](#render-the-map)
+  - [Configuration Basics](#configuration-basics)
+- [Adding Data](#adding-data)
+  - [Mexican State and Municipal Boundaries](#mexican-state-and-municipal-boundaries)
+  - [Adding Layers in Mapbox](#adding-layers-in-mapbox)
+- [A Dropdown Filter](#a-dropdown-filter)
+  - [Displaying the Dropdown](#displaying-the-dropdown)
+
 ## Start a React Project
 
-Start with an empty project in your IDE of choice. We'll use the **vite** development server to spin up a React project structure. Run `npm create vite@latest`. The Vite create project dialog opens. First, Node JS asks if it is OK to install the Vite package. Say yes.
+Start with an empty project in your IDE of choice. We'll use the **vite** development server to spin up a React project structure. Run `npm create vite@latest`. The Vite create project dialog opens. First, Node.js asks if it is OK to install the Vite package. Say yes.
 
 ![vite create](markdown-images/vite-create-1.png "the vite create command running in a terminal")
 
-When we're asked to enter a project name, just enter `.`. This will create a project in the current directory. You should already have an empty directory with a gitignore file. If you enter a project name here, it will create another directory inside this one, and we don't want that.
+When we're asked to enter a project name, we can choose different approaches depending on the IDE we are using and how it works. 
+- If your IDE creates a new directory when you start a new project (for example, JetBrains IDEs), then just enter `.`. This will create a project in the current directory. If you enter a project name here, it will create another directory inside this one, and we don't want that.
+- If your IDE does not automatically create a new directory, then enter a project name here, and the Vite build process will create the new project directory for you.
 
 ![vite create new project name](markdown-images/vite-create-2.png "vite create dialogue - new project name")
 
-Since we already have files in this directory, Vite wants to know what to do with them. We tell it to just ignore the files and continue.
+If you entered `.`, and if there are already files in the current directory, Vite wants to know what to do with them. We tell it to just ignore the files and continue.
 
 ![vite create ignore existing files](markdown-images/vite-create-3.png "vite create dialogue - ignore existing files")
 
@@ -38,15 +56,15 @@ Vite will install a whole React development framework, including a `package.json
 
 ## Get React working
 
-As helpful as Vite is, we aren't going to use its file contents. Go ahead and delete all the contents of the `src` folder.
+As helpful as Vite is, we aren't going to use its file contents. We'll go ahead and delete all the contents of the `src` directory.
 
 ![delete src contents](markdown-images/prepare-project-1.png "deleting contents of the src directory")
 
-In the public folder, delete the `icons.svg` file. I also delete the `eslint.config` file because this file causes strict error checking which I find a bit overwhelming. That's a matter of preference.
+In the public folder, we'll delete the `icons.svg` file. I also delete the `eslint.config` file because this file causes strict error checking, which I find a bit overwhelming. That's a matter of personal preference.
 
 ![delete src contents](markdown-images/prepare-project-2.png "deleting the icons and eslint files")
 
-Now create a file called `main.jsx`. Inside this file create the following content:
+Now we'll create a file called `main.jsx`. Inside this file create the following content:
 
 ```jsx
 import React from 'react';
@@ -62,28 +80,46 @@ function App(){
 root.render(<App />);
 ```
 
-Once you do this, if you go to the Vite dev server, you should see the output "Hello World!". Let's pause to understand what is happening here.
+Once this is done, if we go to the Vite dev server address, we'll see the output "Hello World!". 
 
-If the server ever gets shut down, for example if you shut down your IDE, you can restart it with the command `npm run dev`.
+If the server ever gets shut down, we can restart it with the command `npm run dev`.
 
-First, we are importing two Node libraries, React and ReactDOM. React is the core framework, and ReactDOM applies that framework to a web environment.
+Let's pause to understand what is happening here.
 
-Then, we get a reference to the `root` element. This is in the `index.html` file. If you look in the `index.html` file, you will see there is an element with an id of `root`. There is also a script link to the `main.jsx` file. This means the `index.html` file will load the `main.jsx` file, and the `main` script in turn will get a reference to the `root` element when it runs.
+First, we are importing two Node libraries, React and ReactDOM. 
+
+```jsx
+import React from 'react';
+import ReactDOM from 'react-dom/client';
+```
+
+React is the core framework, and ReactDOM applies that framework to a web environment.
+
+Then, we get a reference to the `root` element: `const el = document.getElementById('root');`. This element is in the `index.html` file. If you look in the `index.html` file, you will see there is an element with an id of `root`. There is also a script-link to the `main.jsx` file. This means the `index.html` file will load the `main.jsx` file, the `main` script will run, and the script will get a reference to the `root` element.
 
 The next line, `const root = ReactDOM.createRoot(el);`, tells React to take control of the `root` element and use that as the root for rendering content.
 
-Now, we create our first component. By default, we call it `App`. This is a JSX function. React components are functions that return JSX. This one just returns a div that has the content "Hello World!".
+Now, we create our first component. 
 
-Finally, we tell React to show that content on the screen with `root.render(<App />);`. This will take that reference to a React root and tell React to render the content there. With these steps, we begin to use React to render content.
+```jsx
+function App(){
+    return <div>Hello World!</div>
+}
+```
+
+By convention, we call our base component `App`. This is a [JSX](https://en.wikipedia.org/wiki/JavaScript_XML) function. React components are functions that return JSX. This one just returns a div that has the content "Hello World!".
+
+Finally, we tell React to show that content on the screen with `root.render(<App />);`. This will take that reference to a React root and tell React to render the content there. With these first steps, we begin using React to render content.
 
 ## Create App and Map Components
 
 ### The App Component
 
-Now we are going to start to create a component structure. In React, we think of apps and web content as consisting of components, which are functions that return JSX.
+Now we are going to start making a component hierarchy. In React, we think of apps and web content as consisting of components. Components are functions that return JSX.
 
-Inside our `src` directory we will a file called `App.jsx`. We'll take the function we wrote in `main.jsx` and copy it over to `App.jsx`. Then we will **export** the function. The code in our `App.jsx` function is now:
+Inside our `src` directory we will create a file called `App.jsx`. We'll take the function we wrote in `main.jsx` and copy it over to `App.jsx`. Then we will **export** the function.
 
+`App.jsx`:
 ```jsx
 function App(){
     return <div>Hello World!</div>
@@ -94,7 +130,7 @@ export default App;
 
 ![create the App component](markdown-images/basic-react-1.png "the basic App commponent")
 
-Now we go back to `main.jsx` and we delete the function from that file. Instead we put an import statement and a link to the App file. Now we have the function written in the App component and **exported**, and we **import** it into `main.jsx`. This makes use of the JavaScript **module** system.
+Now we return to `main.jsx`. We delete the App function in that file. Instead, we put an import statement at the top with a link to the App file. Now the function lives in a separate App component, which **exports** it, and then we **import** it in `main.jsx`. This makes use of the JavaScript **module** system.
 
 `main.jsx`:
 ```jsx
@@ -110,35 +146,37 @@ root.render(<App />);
 
 ![create the App component](markdown-images/basic-react-2.png "the basic main file importing the App component")
 
-### Your Mapbox Token
+At this point, the app works exactly as it did before, rendering the content "Hello World!", but it has a more scalable component structure.
 
-So far we are just creating a very basic React structure. Now let's bring in the map. To do this, we have to start with some housekeeping. To work with Mapbox, we'll need an API key, and to store that we are going to use a file that we will not share or commit to version control.
+### The Mapbox Token
 
-When you created your Vite project, Vite created a file called .gitignore containing a list of all the files that Git version control should ignore in this project. We are going to add an entry to the gitignore. Add `.env.local`.
+So far we have just created a very basic React framework. Now we want to bring in a Mapbox map. To do this, we'll need a Mapbox API key and a place to store it.
+
+When we created our Vite project, Vite created a file called .gitignore, which is a list of all files and directories that Git version control should ignore in this project. We are going to add `.env.local` to the gitignore file.
 
 ![add .env.local to gitignore](markdown-images/map-component-2.png "A gitignore file with .env.local added")
 
-Now create the `.env.local` file in the root of your project directory. Leave it empty for now.
+Now we'll create the `.env.local` file in the root of our project directory. We'll leave it empty for now.
 
 ![create .env.local](markdown-images/map-component-3.png "an empty env.local file")
 
-For the next step, we are going to need a Mapbox API key. Go to [mapbox.com](mapbox.com), make sure you have a free account, and copy your default public key. For projects that will be made public, you should create a [url-restricted token](https://docs.mapbox.com/accounts/guides/tokens/#url-restrictions) but for learning purposes, your default public token is fine.
+For the next step, we are going to need a Mapbox API key. We go to [mapbox.com](mapbox.com). If we don't already have one, we make a free account. In our account overview we should see a "Default public token". We'll copy this. For projects that will be made public, you should create a [url-restricted token](https://docs.mapbox.com/accounts/guides/tokens/#url-restrictions) but for learning purposes, the default public token is fine.
 
 ![get mapbox api key](markdown-images/map-component-4a.png "the mapbox website on an account's tokens page")
 
-In .env.local, declare a variable called `VITE_MAPBOX_TOKEN` and set its value to your token: `VITE_MAPBOX_TOKEN=your-mapbox-token`. Do not put quotes around the token value.
+In .env.local, we now declare a variable called `VITE_MAPBOX_TOKEN` and set its value to the token: `VITE_MAPBOX_TOKEN=your-mapbox-token`. We don't put quotes around the token value.
 
 ![put token value in environment file](markdown-images/map-component-5.png "the .env.local file with a mapbox token")
 
-This is the environment file we wil use for any API tokens or keys that our app might use. We put the file in gitignore so that it is never shared if we want to show or share our project. Note that this will work only in a Vite environment. We could also put it in a file called `keys.js` and export it using the JavaScript module system.
+The `.env.local` file is where we'll put any API tokens or keys that our app might use. We put this file in our gitignore list so it will never be shared if we want to share our project. Note that this will work only in a Vite environment. We could also put it in a file called `keys.js` and export it using the JavaScript module system.
 
-Now we will need to install our mapbox-gl React library. Open a second terminal window and enter `npm install mapbox-gl`. This will install the official Mapbox GL JS package for use with the React framework.
+Now we need to install the Mapbox GL JS React library. We'll open a second terminal window and enter `npm install mapbox-gl`. This will install the official Mapbox GL JS package for use with the React framework.
 
 ![npm install mapbox-gl](markdown-images/map-component-6.png "npm install mapbox-gl command")
 
 ### The Map Component
 
-We are now ready to start working on our Map component. Inside `src`, we will create a `components` directory. Inside `components`, we will create a file called `Map.jsx`. Inside the Map component, for now we'll just create the Map function and export it.
+We are now ready to start working on our Map component. Inside `src`, we'll create a `components` directory. Inside `components`, we will create a file called `Map.jsx`. Inside the Map component, for now we'll just create the Map function and export it.
 
 `Map.jsx`:
 ```jsx
@@ -151,7 +189,7 @@ export default Map;
 
 ![create the Map component](markdown-images/map-component-1.png "An empty Map component")
 
-Now we will start editing the Map component. First, we will have it return a div with the id "map-container":
+We'll have the Map function return a div with the id "map-container":
 
 `Map.jsx`:
 ```jsx
@@ -162,11 +200,9 @@ function Map(){
 export default Map;
 ```
 
-We set up our imports at the top of the file.
+Next we'll set up our imports at the top of the file. First, we'll import two React **hooks**. Hooks are functions that allow our code to use React's built-in features. UseEffect and useRef are two basic built-in React hooks.
 
-First, we are going to import two React **hooks**. Hooks are functions that allow us to use some of React's built-in features from our code. UseEffect and useRef are two basic built-in React hooks.
-
-Second, we are going to import the mapbox GL library that we installed earlier. In addition, we need to import the default Mapbox style sheet, or the map will not render correctly on our page.
+Second, we'll import the Mapbox GL library that we installed earlier. We also need to import the default Mapbox style sheet, or the map won't render correctly.
 
 `Map.jsx`:
 ```jsx
@@ -183,13 +219,13 @@ export default Map;
 
 ### Give the Map Width and Height
 
-Now we are going to do a bit more basic framework setup. We need custom style sheets for the App and Map components, we need to connect those components to the new style sheets, and we need to wire together our App component to our new Map component.
+Now we'll do some do a bit more basic framework setup. We need custom style sheets for the App and Map components, we need to link the components to their style sheets, and we need connect the App and Map components so the map gets rendered.
 
-First, create a new subdirectory of `src` called `css`. This is where we will put our custom style sheets. Inside this directory, create two new style sheets called `App.css` and `Map.css`.
+First, we'll create a new subdirectory of `src` called `css`. Inside this directory, we'll create two style sheets, `App.css` and `Map.css`.
 
 ![create app.css and map.css](markdown-images/map-component-7.png "empty map and app style sheets")
 
-In our Map component's style sheet, we will add a selector for the div with the `map-container` id and give it width and height. Without this, the map will not show up on the page.
+In our Map component's style sheet, we'll add a selector for the div with the `map-container` id, and give it width and height. Without this, the map won't show up on the page.
 
 `Map.css`:
 ```css
@@ -199,9 +235,9 @@ In our Map component's style sheet, we will add a selector for the div with the 
 }
 ```
 
-Next, import the style sheet into the Map component. Add this import statement in `Map.jsx`: `import '../css/Map.css';`.
+Now we'll import the style sheet into the Map component by adding this import statement in `Map.jsx`: `import '../css/Map.css';`.
 
-Next, let's move over to the App component. We are going to import the Map component into the App component and replace the Hello World message with the Map component. We are also going to give the div that wraps the Map component an id so we can add style rules for it. We are also going to import the App style sheet.
+Next, let's move over to the App component. We're going to import the Map component into the App component and replace the Hello World message with the Map component. We'll also give the div that wraps the Map component an id so we can add style rules for it. And we need to import the App style sheet.
 
 `App.jsx`:
 ```jsx
@@ -217,9 +253,9 @@ function App(){
 export default App;
 ```
 
-Here, we are making the Map component a child of the App component. Notice we are importing the Map component. Then, in our JSX return, we return the Map component inside a wrapping div.
+Here, we are making the Map component a child of the App component. Notice we're importing the Map component at the top. Then, in our JSX return, we return the Map component inside a wrapping div.
 
-In our App component style sheet, we'll make sure the page-wrapper gets the full viewport height. Since we told the map to occupy 100% of available space, and its wrapper occupies the whole viewport, this means the map will start out occupying the entire browser viewport.
+In our App component style sheet, we'll make sure the `#page-wrapper` div  gets the full viewport height. Since we told the map to occupy 100% of available space, and its wrapper occupies the whole viewport, this means the map will start out occupying the entire browser viewport.
 
 `App.css`:
 ```css
@@ -235,9 +271,9 @@ In our App component style sheet, we'll make sure the page-wrapper gets the full
 }
 ```
 
-### Output the Map
+### Render the Map
 
-Now we are ready to write the code that outputs the map. Add the following code to the top of the Map function in the Map component, above the return value:
+Now we're ready to write the code that outputs the map. At the top of the Map function, above the return value, we'll add a couple of refs and a `useEffect` hook:
 
 `Map.jsx`:
 ```jsx
@@ -256,19 +292,19 @@ Now we are ready to write the code that outputs the map. Add the following code 
     }, [])
 ```
 
-Let's go over what we are doing here. Earlier we imported the `useRef` hook from React. The `useRef` hook is typically used in React to hold references to DOM elements, and sometimes to other values that need to be persisted across component renders. In this case we are using one ref to hold a reference to the map itself, and another ref for the map container. First we use the `useRef` hooks to create the empty (null) refs.
+Let's go over what we're doing here. Earlier we imported the `useRef` hook from React. The `useRef` hook is typically used in React to hold references to DOM elements, and sometimes to other values that need to be persisted across component renders. In this case we're using one ref to hold a reference to the map itself, a second ref for the map container. We start by creating empty (`null`) refs.
 
-Next, we use the `useEffect` hook. This is used to synchronize components with external systems. In this case, we are communicating with the Mapbox API and generating a Map based on the returns of that network connection.
+Next, we use the `useEffect` hook. This hook is used to synchronize components with external systems. In this case, we are communicating with the Mapbox API and generating a Map based on the returns of that network connection.
 
-`useEffect` takes as its arguments a function and an array. The function determines what happens, the array determines when it happens. In this case we pass it a function and an *empty* array. The empty array means the function will run once, when the component renders.
+`useEffect` takes a function and an array as its arguments. The function argument determines what happens, and the array determines when it happens. In this case we pass it a function and an *empty* array. The empty array means the function will run once, when the component renders.
 
 Inside the function, we first get the Mapbox token that we retrieved and stored earlier. The Mapbox API won't let us connect without this token. Next, we take the `mapRef` ref variable that we declared earlier, and we set its value to be a new Mapbox map.
 
-The new Map() function takes as its argument an object, containing details for how the new Map should be configured. In this case we are keeping it as simple as possible. We just tell it where its container is. Its container will be the current value of the map container ref that we declared earlier.
+The `new Map()` function takes an object as its argument. The object specifies how the new Map should be configured. To start with we keep it as simple as possible. We just tell it where its container is. Its container will be the current value of the map container ref that we declared earlier.
 
-The return value of a useEffect is always a function. This function runs usually when a component is re-rendered or, if it only renders once -- as this one does -- when the component unmounts. This is typically a **cleanup** function, which removes any lingering refs or other artifacts of the useEffect that may interfere with correct app function in the future. We don't want wandering map refs anywhere in memory, so we are here using the cleanup function to remove these refs.
+The return value of a useEffect is always a function. This function runs usually when a component is re-rendered or, if it only renders once -- as this one does -- when the component unmounts. This is typically a **cleanup** function, which removes any lingering refs or other artifacts of the useEffect that may interfere with correct app function in the future. We don't want wandering map refs anywhere in memory, so we use the cleanup function to remove these refs.
 
-There is one more important edit we need to make. In the return statement to Map function, we need to add the ref as a property, or *prop* of the JSX component. We do that like this: `return <div id="map-container" ref={mapContainerRef}></div>`. This says that the map-container div will be linked to a ref, and the ref it will be linked to is the `mapContainerRef` we declared earlier. Remember, we configured the new map to expect that its container would be the element referenced by `mapContainerRef`, but at that time the ref was set to null. Now we are specifying an element for that ref.
+There is one more important edit we need to make. In the return statement to the Map function, we need to add the ref as a property (or *prop*) of the JSX component: `return <div id="map-container" ref={mapContainerRef}></div>`. This means the map-container div will be connected to the `mapContainerRef` we declared earlier. Remember, we configured the new map to expect that its container would be the element referenced by `mapContainerRef`, but at that time the ref was set to null. Now we're specifying an element for that ref.
 
 Here is the full content of our Map component so far:
 
@@ -300,15 +336,15 @@ function Map(){
 export default Map;
 ```
 
-When you go to your dev server address, you should now see a Mapbox map displayed on the browser viewport.
+When we go to our dev server address, we should now see a Mapbox map displayed on the browser viewport.
 
 ![map displayed](markdown-images/map-component-8.png "A Mapbox map displayed on a browser")
 
 ### Configuration Basics
 
-Notice that the Map function takes an object as its argument. This is the map configuration object. In this case, it only has one property, `container`. Typically we would add a few more configuration properties, especially `center` and `zoom`. We may also want to specify a style.
+We noticed earlier that the `new Map()` function takes a configuration object as its argument. We started with just one property, `container`. It's more usual to add more configuration properties, especially `center` and `zoom` and maybe also `style`.
 
-The `center` property takes an array of numbers representing the longitude (lng) and latitude (lat) the map should be centered to on first loading. The `zoom` property tells the map how far to zoom on first loading. Here we have the map centering and zooming on UT San Antonio on first load:
+The `center` property takes an array of numbers representing the longitude (`lng`) and latitude (`lat`) that the map will center on when it first loads. The `zoom` property tells the map how far to zoom  in when it loads. These settings will center and zoom the map on UT San Antonio:
 
 ```jsx
 mapRef.current = new mapboxgl.Map({
@@ -318,7 +354,7 @@ mapRef.current = new mapboxgl.Map({
         });
 ```
 
-In addition, you can change the style from standard to satellite:
+You can also change the style from standard to satellite:
 
 ```jsx
 mapRef.current = new mapboxgl.Map({
@@ -329,27 +365,31 @@ mapRef.current = new mapboxgl.Map({
         });
 ```
 
-## Adding data
+## Adding Data
 
-### State and municipal boundaries
+### Mexican State and Municipal Boundaries
 
-We are going to build an application that shows the population of Indigenous groups in Mexico, broken down by state and municipality. We first need to get our data sources.
+We're going to build an application that shows the population of Indigenous groups in Mexico, broken down by state and municipality. We'll start by finding data to use.
 
-We can get the geographic data from [INEGI](https://www.inegi.org.mx/default.html), the Mexican government's Institute for Statistics and Geography. They offer good [base maps](https://www.inegi.org.mx/descarga-mapa/). We will take the [base map file suitable for QGIS](https://www.inegi.org.mx/contenidos/descarga-mapa/proyectos-sig/nal-QGis.zip), the free geographic information system software.
+We can get geographic data from [INEGI](https://www.inegi.org.mx/default.html), the Mexican government's Institute for Statistics and Geography. They offer good [base maps](https://www.inegi.org.mx/descarga-mapa/). We'll take the [base map file suitable for QGIS](https://www.inegi.org.mx/contenidos/descarga-mapa/proyectos-sig/nal-QGis.zip), which is a free geographic information system (GIS) software.
 
-Once you've download the zip file, open it and you'll see two files: a geopackage (.gpkg) and a QGIS project file (.qgz). Just open QGIS, and then you can drag and drop either of the two files into the QGIS window to open a new project with the data.
+After downloading the zip file, when we open the zip, we two files: a geopackage (.gpkg) and a QGIS project file (.qgz). 
+
+![Open the Zip file](markdown-images/gis-0.png "A folder open showing a shapefile and QGIS project file")
+
+We can open QGIS, then drag and drop either of the two files into the QGIS window to open a new project with the data.
 
 ![Open the data in QGIS](markdown-images/gis-1.png "A QGIS window open with Mexican state and municipal boundaries showing")
 
-In the layers pane you will see layers labeled "Etiquetas Estados" (state labels), "Límites Geoestadísticos Estatales" (geo-statistical state limits), and "Límites Geoestadísticos Municipales" (geo-statistical municipal limits). We will take the municial limits layers so we can be sure we have state and municipal boundaries associated with official Mexican geographic codes. This will allow us to connect the boundary lines with other statistics such as population data for these areas.
+In the layers pane we see layers labeled "Etiquetas Estados" (state labels), "Límites Geoestadísticos Estatales" (geo-statistical state limits), and "Límites Geoestadísticos Municipales" (geo-statistical municipal limits). We will take the municipal limit layer.
 
-Right click on the municial limits layer and select Export --> Save Features As.
+We right click on the municipal limits layer and select Export --> Save Features As.
 
 ![Export the data from QGIS](markdown-images/gis-2.png "A QGIS window showing how to export a layer")
 
-In the export dialogue, GeoJSON will be automatically selected as the format. Specify the file name and location. QGIS will automatically add `.geojson` to any file name you select, We'll change that later. We want to save the file to a new subdirectory in our `src` directory, called `data`.
+In the export dialogue, GeoJSON will be automatically selected as the format. We have to specify the name of our output file name and where we want to put it in our file system. QGIS will automatically add `.geojson` to any file name you select. We want to save the file to a new subdirectory in our `src` directory, called `data`.
 
-Under CRS, select EPSG:4326, which is the projection that Mapbox uses. At the bottom, you can uncheck "Add saved file to map" since we won't be using this in QGIS.
+Under CRS, we need select EPSG:4326, since this is the projection that Mapbox uses. At the bottom, we can uncheck "Add saved file to map" since we won't actually be using this in QGIS. We're just using QGIS as a way to inspect the layers in a geopackage file and output the ones we want into GeoJSON format, which Mapbox will be able to read.
 
 ![Define the export parameters](markdown-images/gis-3.png "The QGIS export dialogue")
 
@@ -361,13 +401,15 @@ We need to rename the geojson file to just have the `.json` file ending, or Mapb
 
 ![Rename the files](markdown-images/gis-5.png "JSON files in the data directory")
 
-### Adding layers in Mapbox
+### Adding Layers in Mapbox
 
-Now we can add the GeoJSON data as a layer to our Mapbox base map. Mapbox's standard map style already has Mexican state boundaries, so the municipal boundaries will fit within Mapbox's existing map data. To add layers, we first need to add the data as a source. We will use the [addSource method](https://docs.mapbox.com/mapbox-gl-js/api/map/#map#addsource). This method accepts two arguments. The first should be a string, which is the unique name for the source. The second is an object that specifies the [type of source](https://docs.mapbox.com/style-spec/reference/sources/) and the source itself.
+Now we can add the GeoJSON data as a layer to our Mapbox base map. Mapbox's standard map style already has Mexican state boundaries, so the municipal boundaries will fit within Mapbox's existing map data. 
 
-The source can't be added until the map has loaded. If we try to do so, we'll get an error. So we have to add some code to ensure that map loads first, then the source gets added.
+To add layers, we first need to add the data as a source. We'll use the [addSource method](https://docs.mapbox.com/mapbox-gl-js/api/map/#map#addsource). This method accepts two arguments. The first should be a string, which is a unique name we give the source. The second argument is an object that specifies the [type of source](https://docs.mapbox.com/style-spec/reference/sources/) and the source itself.
 
-First we will import import the JSON. In `Map.jsx`, add the following import: `import municipios from '../data/muni-limits.json';`. Then, in the same useEffect that generates the map, we will write:
+The source can't be added until the map has loaded, or we'll get an error. So we have to add some code to ensure that map loads first, and only then does the source get added.
+
+First we import the JSON. In `Map.jsx`, we can add the import: `import municipios from '../data/muni-limits.json';`. Then, in the same `useEffect` that generates the map, we'll write:
 
 `Map.jsx`:
 ```jsx
@@ -379,11 +421,11 @@ First we will import import the JSON. In `Map.jsx`, add the following import: `i
         });
 ```
 
-On its own, this will have no visible effect on our map. To visualize the data we'll have to specify a layer with instructions on how to render the data on the map. We'll use the [addLayer method](https://docs.mapbox.com/mapbox-gl-js/api/map/#map#addlayer). In adding a layer, we will have to specify the source and type. The list of types can be found in the [layers documentation](https://docs.mapbox.com/style-spec/reference/layers/#type). For this layer we could use "fill" if we wanted to add colors to each muncipality, but since we just want the boundary lines, we can use "line".
+On its own, this will have no visible effect on our map. It just adds a data source. To visualize the data we'll have to specify a layer with instructions on how to render the data on the map. We'll use the [addLayer method](https://docs.mapbox.com/mapbox-gl-js/api/map/#map#addlayer). We'll have to specify the data source and type of layer. The list of layer types can be found in the [layers documentation](https://docs.mapbox.com/style-spec/reference/layers/#type). For this layer we could use "fill" if we wanted to add colors to each muncipality, but since we just want the boundary lines, we can use "line".
 
-Once we have selected a type, we can either accept the default presentation for that type, or we can customize it with the paint property. Each type has its own paint property options. For example, for the [line type paint property](https://docs.mapbox.com/style-spec/reference/layers/#line) we can specify the color and width, among many other options.
+Once we've selected a type, we can either accept the default presentation for that type, or we can customize it with the paint property or layout properties. Each layer type has its own paint and/or layout property options. For example, for the [line type paint property](https://docs.mapbox.com/style-spec/reference/layers/#line) we can specify the color and width, among many other options.
 
-We'll start by rendering it with the default line options, specifying no custom paint property. Underneath the code to add the layer, add the following method:
+We'll start by rendering the layer with default line options (no custom paint property). Underneath the `addSource` method, we write an `addLayer` method:
 
 `Map.jsx`:
 ```jsx
@@ -394,7 +436,7 @@ We'll start by rendering it with the default line options, specifying no custom 
             });
 ```
 
-We also need to change the center and zoom properties we specified earlier, which focus on San Antonio. To center on Mexico, set the properties as follows: `center: [-103.7294, 23.8002], zoom: 4.23`.
+We also need to change the center and zoom properties we specified earlier, which focusεδ on San Antonio. To center on Mexico, we can set the properties as follows: `center: [-103.7294, 23.8002], zoom: 4.23`.
 
 Our Map component now looks like this:
 
@@ -443,7 +485,7 @@ function Map(){
 export default Map;
 ```
 
-You should now see the boundary lines for Mexican municipalities.
+When we look at the map, we can now see the boundary lines for Mexican municipalities.
 
 ![See boundaries in Mapbox](markdown-images/gis-6.png "A map of Mexico showing the boundaries of all municipalities")
 
@@ -461,15 +503,15 @@ The lines appear a bit thick, so we can use the addLayer method's `paint` proper
             });
 ```
 
-If we want to show the municipality labels, we need to add a separate text layer. This will be a layer of type [symbol](https://docs.mapbox.com/style-spec/reference/layers/#symbol). Symbol layers are used for both icons and text labels. Instead of a paint property, we are going to give this layer a [layout property](https://docs.mapbox.com/style-spec/reference/layers/#layout-property). Map layers in Mapbox can have their appearance customized through either the paint or the layout property. The documentation tells us which to use for each sub-property.
+If we want to show the municipality labels, we need to add a separate text layer. This will be a layer of type [symbol](https://docs.mapbox.com/style-spec/reference/layers/#symbol). Symbol layers are used for both icons and text labels. Instead of a paint property, we're going to give this layer a [layout property](https://docs.mapbox.com/style-spec/reference/layers/#layout-property). The documentation for each layer type will always tell us whether to use paint or layout, or a combination, for that type.
 
-The crucial layout property that will tell Mapbox what to render is the `text-field` property. This can be used to provide a hard-coded value, but in this case we want each municipality to have its own label. To that end, we are going to use an [expression](https://docs.mapbox.com/style-spec/reference/expressions/) for the property's value. Specifically, we'll use a [data expression](https://docs.mapbox.com/style-spec/reference/expressions/#data-expressions) to retrieve feature properties.
+For text, the fundamental layout property that tells Mapbox what to render is the `text-field` property. This can be used to provide a hard-coded value, but in this case we want each municipality to have its own label. For this, we'll to use an [expression](https://docs.mapbox.com/style-spec/reference/expressions/) as the property's value. Specifically, we'll use a [data expression](https://docs.mapbox.com/style-spec/reference/expressions/#data-expressions) to retrieve feature properties.
 
-But how do we know what feature to retrieve? Here we may find it helpful to go back to QGIS and look at the layer attribute table. Make sure the municipal data layer is selected, and then find the attribute table icon, or just press F6.
+How do we know what feature we need to retrieve? Here we may find it helpful to go back to QGIS and look at the layer attribute table. Making sure the municipal data layer is selected, we can find the attribute table icon, or just press F6.
 
 ![Open the attribute table](markdown-images/gis-7.png "The cursor hovering over the attribute table icon in QGIS")
 
-With the attribute table open, look at the name of the column that contains the municipality names. In this case, it is called "nomgeo".
+With the attribute table open, we look for the title of the column that contains the municipality names. In this case, it is called "nomgeo".
 
 ![Look at the attribute table](markdown-images/gis-8.png "The attribute table for Mexican municipality data")
 
@@ -494,13 +536,13 @@ We should now be able to see the names of the municipalities.
 
 ## A Dropdown Filter
 
-Now we are going to enable the user to filter by state. To do this, we are going to build a dropdown menu with optioins for each Mexican state, then wire that to the map in such a way that the map layer gets a filter based on the user's selection.
+Now we're going to enable the user to filter by state. To do this, we're going to build a dropdown menu with options for each Mexican state, then wire that to the map so our map layer gets a filter that follows the user's selection.
 
 ### Displaying the Dropdown
 
-To populate the menu, we will want to create a list of all the Mexican states. We already have that in the geopackage we obtained from INEGI. We will need to reshape the data to suit our needs. Python is very good at reshaping text data. We will use Python to read the geopackage, select the appropriate layer, reshape the data, and create a JSON file for our application.
+To populate the menu, we'll want to create a list of all the Mexican states. We already have that in the geopackage we obtained from INEGI. We'll need to reshape the data to suit our needs. Python is very good at reshaping text data, so we'll use Python to read the geopackage, select the appropriate layer, reshape the data, and create a JSON file for our application.
 
-The Python snippets that follow assume use of a Notebook such as Jupyter Notebook or Google Collab.
+The Python snippets that follow assume use of a Notebook such as Jupyter Notebook or Google Colab.
 
 We can load a geopackage file and inspect its layer structure using the `geopandas` library:
 
@@ -517,7 +559,7 @@ gdf = gpd.read_file('MapaBaseMultiescala.gpkg', layer='etiquetas_estados')
 gdf
 ```
 
-Once we've determined that we have the correct layer selected, with the data we need, we can exclude the information we don't need and rename the columns to suit our needs.
+Once we've determined that we correctly selected the layer that has the data we need, we can exclude the data we don't need, and rename the columns to suit our needs. Here, we're creating a new data frame with just the state names and geographic codes, and we're renaming the columns from "cvegeo" and "nomgeo" to the simpler "code" and "name".
 
 ```python
 estados_df = (
@@ -529,7 +571,7 @@ estados_df = (
 )
 ```
 
-We'll then convert it into a Python dictionary format, which is identical to the JavaScript array we will eventually use. We can store the resulting data in a file.
+We'll then convert it into a Python dictionary format, which is identical to the JavaScript object we'll eventually use. We can store the resulting data in a file.
 
 ```python
 import json
@@ -544,7 +586,7 @@ Now we can transfer that JSON file into our `src/data` directory.
 
 ![Bring in the list of states](markdown-images/states-dropdown-1.png "A WebStorm window shoing the mex-states.json file in the src/data directory")
 
-There are a couple of things we can do to clean up the data before we use it. In the data set there is a rogue new line character in entry 09. Let's remove that.
+There are a couple of things we can do to clean up the data before we use it. In the data set there is a rogue newline character in entry 09. Let's remove that.
 
 ![Edit the Ciudad de Mexico entry](markdown-images/states-dropdown-2.png "Ciudad de Mexico in a JSON file with a newline character")
 
@@ -569,11 +611,11 @@ We are now ready to construct our dropdown. A basic dropdown has the following s
 ```
 Source: [Mozilla Developer Network](https://developer.mozilla.org/en-US/docs/Web/HTML/Reference/Elements/select)
 
-A `select` element wraps around a set of `option` elements. Each `option` element has a `value` attribute. The `select` element must have an `id` attribute that corresponds to the `for` attribute of a `label` element. While it is possible to have a `select` element without a `label`, it violates accessibility standards. On the other hand, the `select` element's `name` attribute is not necessary in our context because we are not sending the dropdown responses to any remote server.
+A `select` element wraps around a set of `option` elements. Each `option` element has a `value` attribute. The `select` element must have an `id` attribute that corresponds to the `for` attribute of a `label` element. While it is possible to have a `select` element without a corresponding `label`, this would violate accessibility standards. On the other hand, the `select` element's `name` attribute is not necessary in our context because we're not sending the dropdown responses to any remote server. We'll be using React's state system instead.
 
-We want our `value` attribute populated by our state JSON's `code` properties, while the content is populated by the `name` properties. To that end, we'll grab the JSON in our App component and pass it down to our Dropdown component as a prop. We are planning on making our Dropdown component reusable, so we are also going to pass in a prop called `id` that will be used to set the `select` element `id` and the `label` element `for` attributes.
+We'll use the `code` values we added to our JSON file to populate the dropdown `value` attributes and the `name` properties to generate the visible option content. To do that, we'll grab the JSON inside our App component, and pass it down to our Dropdown component as a prop. We're planning to make our Dropdown component reusable, so we're also going to pass in a prop called `id` that will be used to set the `select` element's `id` attribute and the `label` element's `for` attribute.
 
-Create the outline of the Dropdown component and save it in the `src/components` directory:
+First we'll create the outline of the Dropdown component and save it in the `src/components` directory:
 
 `Dropdown.jsx`:
 ```jsx
@@ -584,7 +626,7 @@ function Dropdown(){
 export default Dropdown;
 ```
 
-Now we can import the element into our App component and set it as a child of App.
+Now we can import it into our App component and set it as a child of App.
 
 `App.jsx`:
 ```jsx
