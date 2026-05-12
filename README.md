@@ -21,6 +21,7 @@ This project is based on Mapbox's tutorial on [using checkboxes to toggle layers
   - [Adding Layers in Mapbox](#adding-layers-in-mapbox)
 - [A Dropdown Filter](#a-dropdown-filter)
   - [Displaying the Dropdown](#displaying-the-dropdown)
+  - [Styling the Dropdown](#styling-the-dropdown)
 
 ## Start a React Project
 
@@ -644,7 +645,7 @@ function App(){
 export default App;
 ```
 
-Next, let's import the states list JSON and set it as a variable called `states`, then pass it into the Dropdown component as a prop called `options`, along with an `id` prop. This will result in our code receiving the list of states from the JSON file and passing it into our Dropdown component.
+Next, let's import the states JSON and set it as a variable called `states`, then pass it into the Dropdown component as a prop called `options`, along with an `id` prop. This will result in our code receiving the list of states from the JSON file and passing it into our Dropdown component.
 
 `App.jsx`:
 ```jsx
@@ -666,7 +667,7 @@ function App(){
 export default App;
 ```
 
-Back in our Dropdown component, we'll receive the `options` and `id` props from its parent component, App. Then we'll create a very basic jsx return for our component.
+Back in our Dropdown component, we'll receive the `options` and `id` props from its parent component. Then we'll create the basic outline of our JSX return.
 
 `Dropdown.jsx`:
 ```jsx
@@ -682,7 +683,7 @@ function Dropdown( {options, id }){
 export default Dropdown;
 ```
 
-Now we can use the props we passed in to our Dropdown component to populate the dropdown. We'll use the id to populate the label and the `select` element's `id` attribute, and we'll use the `options` prop to generate the dropdown options. We'll use the built-in JS `.map` function for this, which is a very common development pattern. When we use `.map` in React we have to give each resulting element a unique `key` attribute.
+Now we can use the props we passed in to our Dropdown component to populate the dropdown. We'll use the id to populate the label and the `select` element's `id` attribute, and we'll use the `options` prop to generate the dropdown options. We'll use the built-in JS `.map` function for this, which is a very common React development pattern. When we use `.map` in React we have to give each resulting element a unique `key` attribute.
 
 `Dropdown.jsx`:
 ```jsx
@@ -714,7 +715,7 @@ At this point, we should see the dropdown appear above our map, with the correct
 
 ### Styling the Dropdown
 
-There are many different ways to style a dropdown, from fully customized JavaScript-driven approaches, to imported components and libraries, to simple CSS tweaks. We will be using a very basic all-CSS approach for simplicity, though this will limit the extent to which we can alter the appearance of the native browser default.
+There are many different ways to style a dropdown, from fully customized JavaScript-driven approaches, to imported components and libraries, to simple CSS tweaks. For simplicity, we'll use a very basic all-CSS approach, though this will limit how far we can customize the dropdown in relation to the browser default.
 
 This approach is adapted from an example by [Stephanie Eckles](https://codepen.io/5t3ph/pen/MWyyYNz).
 
@@ -722,7 +723,7 @@ First, we'll create a `Dropdown.css` file in the `src/css` directory, and import
 
 ![Create the dropdown style sheet](markdown-images/states-dropdown-5.png "A CSS import in the Dropdown component")
 
-To arrange the label above the dropdown, we'll create a wrapper for the two elements. Our component already has such a wrapper; we'll give it a class of `select-and-label`. We'll also add a colon after the label content for greater clarity.
+To arrange the label above the dropdown, we'll define a wrapper for the two elements. Our component already has wrapping div; we'll give it a class of `select-and-label`. We'll also add a colon after the label content for greater clarity.
 
 `Dropdown.jsx`:
 ```jsx
@@ -749,7 +750,7 @@ We can now add some CSS rules targeting that div.
 }
 ```
 
-We are using absolute positioning to put it at the top left of the page. We're using flex display to put the label on top of the dropdown and center the label on the input element. We are using a z-index property to make sure the dropdown is not covered by map content. We define a font family -- you can customize this as you wish. We are also declaring a CSS variable for a color we will use in a few different places.
+We're using absolute positioning to put the dropdown at the top left of the page. We're using flex display to put the label on top of the dropdown and center the label on the input element. We're using a z-index property to make sure the dropdown is not covered by map content. We define a font family. We're also declaring a CSS variable for a color we'll use in a few different places.
 
 Next, we'll add a `className` prop to our `select` element so we can target it directly: `<select className='dropdown' id={id}>`. With this in place, we can write some more rules targeting the dropdown appearance directly:
 
