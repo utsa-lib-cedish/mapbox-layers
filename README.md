@@ -22,6 +22,12 @@ This project is based on Mapbox's tutorial on [using checkboxes to toggle layers
 - [A Dropdown Filter](#a-dropdown-filter)
   - [Displaying the Dropdown](#displaying-the-dropdown)
   - [Styling the Dropdown](#styling-the-dropdown)
+  - [Getting the User Selection](#getting-the-user-selection)
+  - [Use the Dropdown to Set a Filter](#use-the-dropdown-to-set-a-filter)
+  - [Centering on the Selected State](#centering-on-the-selected-state)
+- [Create Population Choropleths](#create-population-choropleths)
+  - [Get and Shape the Data](#get-and-shape-the-data) 
+  - [Revise Dropdown Styles](#revise-dropdown-styles)
 
 ## Start a React Project
 
@@ -612,11 +618,21 @@ We are now ready to construct our dropdown. A basic dropdown has the following s
 ```
 Source: [Mozilla Developer Network](https://developer.mozilla.org/en-US/docs/Web/HTML/Reference/Elements/select)
 
-A `select` element wraps around a set of `option` elements. Each `option` element has a `value` attribute. The `select` element must have an `id` attribute that corresponds to the `for` attribute of a `label` element. While it is possible to have a `select` element without a corresponding `label`, this would violate accessibility standards. On the other hand, the `select` element's `name` attribute is not necessary in our context because we're not sending the dropdown responses to any remote server. We'll be using React's state system instead.
+- A `select` element wraps around a set of `option` elements. 
+- Each `option` element has a `value` attribute. 
+- The `select` element should have an `id` attribute, which corresponds to the `label` element's `for` attribute. 
+- The connection between the `select` element `id` attribute and the `label` element `for` attribute is important for accessibility
+- In our scenario, the `select` element's `name` attribute is not necessary. This attribute is used to package information for remote servers, but in our app we will use React's state system instead.
 
-We'll use the `code` values we added to our JSON file to populate the dropdown `value` attributes and the `name` properties to generate the visible option content. To do that, we'll grab the JSON inside our App component, and pass it down to our Dropdown component as a prop. We're planning to make our Dropdown component reusable, so we're also going to pass in a prop called `id` that will be used to set the `select` element's `id` attribute and the `label` element's `for` attribute.
+Earlier, we added `code` values we added to our JSON file. Each state has a unique individual code. We'll use these now to populate the `value` attributes for each `option` element. 
 
-First we'll create the outline of the Dropdown component and save it in the `src/components` directory:
+Our JSON file also has `name` properties for each state. We'll use these to generate the option content that the user actually sees. 
+
+We're going to import the JSON content to our App component, and from there we'll pass it down to our Dropdown component as a prop. 
+
+We're going to make our Dropdown component reusable, so all our props should be variables that we can change later on. To populate the `select` element's `id` attribute and the `label` element's `for` attribute we'll use a prop called `id` that we'll use for both those attributes.
+
+First, we'll create the outline of the Dropdown component and save it in the `src/components` directory:
 
 `Dropdown.jsx`:
 ```jsx
@@ -627,7 +643,7 @@ function Dropdown(){
 export default Dropdown;
 ```
 
-Now we can import it into our App component and set it as a child of App.
+Now we can import the component into our App component, and set it as a child of App and sibling of Map.
 
 `App.jsx`:
 ```jsx
@@ -645,7 +661,7 @@ function App(){
 export default App;
 ```
 
-Next, let's import the states JSON and set it as a variable called `states`, then pass it into the Dropdown component as a prop called `options`, along with an `id` prop. This will result in our code receiving the list of states from the JSON file and passing it into our Dropdown component.
+Next, let's import the states JSON and set it as a variable called `states`. We'll then pass this data into the Dropdown component as a prop called `options`, along with an `id` prop. This way we'll get the list of states from the JSON file and pass it into our Dropdown component.
 
 `App.jsx`:
 ```jsx
@@ -667,7 +683,7 @@ function App(){
 export default App;
 ```
 
-Back in our Dropdown component, we'll receive the `options` and `id` props from its parent component. Then we'll create the basic outline of our JSX return.
+Back in our Dropdown component, we'll receive the `options` and `id` props. Then, we'll create the basic outline of our JSX return.
 
 `Dropdown.jsx`:
 ```jsx
@@ -683,7 +699,12 @@ function Dropdown( {options, id }){
 export default Dropdown;
 ```
 
-Now we can use the props we passed in to our Dropdown component to populate the dropdown. We'll use the id to populate the label and the `select` element's `id` attribute, and we'll use the `options` prop to generate the dropdown options. We'll use the built-in JS `.map` function for this, which is a very common React development pattern. When we use `.map` in React we have to give each resulting element a unique `key` attribute.
+We can use the props we passed in to our Dropdown component to populate the dropdown attributes and content. 
+- We'll use the `id` prop to populate the label and the `select` element's `id` attribute. 
+- We'll use some JavaScript to capitalize the `id` prop value and use it as the visible label content.
+- We'll use the `options` prop to generate the dropdown options. 
+- We'll use the built-in JS `.map` function for this, which is a very common React development pattern. 
+- When we use `.map` in React we have to give each resulting element a unique `key` attribute.
 
 `Dropdown.jsx`:
 ```jsx
@@ -709,7 +730,7 @@ function Dropdown( {options, id }){
 export default Dropdown;
 ```
 
-At this point, we should see the dropdown appear above our map, with the correct list of states. That said, it doesn't look very good, so our next step is to make it a bit more pleasing to the eye.
+At this point, we should see the dropdown appear above our map, with the correct list of states. Our next step is to style it a bit.
 
 ![Display the dropdown](markdown-images/states-dropdown-4.png "A map displaying a dropdown with a list of all Mexican states")
 
@@ -723,7 +744,7 @@ First, we'll create a `Dropdown.css` file in the `src/css` directory, and import
 
 ![Create the dropdown style sheet](markdown-images/states-dropdown-5.png "A CSS import in the Dropdown component")
 
-To arrange the label above the dropdown, we'll define a wrapper for the two elements. Our component already has wrapping div; we'll give it a class of `select-and-label`. We'll also add a colon after the label content for greater clarity.
+To arrange the label above the dropdown, we'll define a wrapper for the two elements. Our component already has wrapping div, so we'll just give it a class of `select-and-label`. We'll also add a colon after the label content for greater clarity.
 
 `Dropdown.jsx`:
 ```jsx
@@ -750,7 +771,13 @@ We can now add some CSS rules targeting that div.
 }
 ```
 
-We're using absolute positioning to put the dropdown at the top left of the page. We're using flex display to put the label on top of the dropdown and center the label on the input element. We're using a z-index property to make sure the dropdown is not covered by map content. We define a font family. We're also declaring a CSS variable for a color we'll use in a few different places.
+We're using:
+  - Absolute positioning to put the dropdown at the top left of the page.
+  - Some padding
+  - Flex display to arrange the label and dropdown as a column and center the label on the input element. 
+  - A z-index property to make sure the dropdown is not covered by map content. 
+  - A custom-defined font family. 
+  - A CSS variable for a color we'll use in multiple places.
 
 Next, we'll add a `className` prop to our `select` element so we can target it directly: `<select className='dropdown' id={id}>`. With this in place, we can write some more rules targeting the dropdown appearance directly:
 
@@ -767,9 +794,12 @@ Next, we'll add a `className` prop to our `select` element so we can target it d
 }
 ```
 
-Here we add a slightly curved border using the color we defined earlier. We add some padding and customize the font a bit. We replace the arrow cursor with the pointer cursor. Finally, we take control of the background color, giving it a subtle white gradient. You can customize this color as you wish.
+- We add a slightly curved border using the color we defined earlier. 
+- We add some padding and customize the font a bit. 
+- We replace the arrow cursor with the pointer cursor. 
+- We take control of the background color, giving it a subtle white gradient.
 
-Finally, we can customize the appearance of the dropdown arrow symbol. To do this, we first need to remove the default symbol by adding `appearance: none` to our dropdown class. When we do this, the default symbol disappears. Now we will use an `::after` pseudo-class to add our own symbol. Here's the full css:
+Finally, we can customize the appearance of the dropdown arrow symbol. To do this, we first need to remove the default symbol by adding `appearance: none` to our dropdown class. When we do this, the default symbol disappears. Now we will use an `::after` pseudo-class to add our own symbol. Here's the full CSS:
 
 `Dropdown.css`:
 ```css
@@ -810,15 +840,24 @@ Finally, we can customize the appearance of the dropdown arrow symbol. To do thi
     appearance: none;
 }
 ```
-Notice we are giving the arrow the same color as the border. We position it on the right and control its vertical position with `top` and `transform` properties. We control its size with the `width` and `height` properties, then its shape with a `clip-path` property. We block the cursor from interacting with it using `pointer-events: none`, otherwise it would block the user from interacting with the dropdown.
+Notice:
+- We are giving the arrow the same color as the border. 
+- We position the arrow on the right and control its vertical position with `top` and `transform` properties. 
+- We control the arrow's size with the `width` and `height` properties, and its shape with a `clip-path` property. 
+- We prevent the cursor from interacting with it using `pointer-events: none`, otherwise it would block the user from interacting with the dropdown.
 
-We could get much, much more elaborate with this, but this will work for now. Let's move back to the functionality.
+We could get much, much more elaborate with this, but this will work for now. Let's move back to the main functionality.
 
 ### Getting the User Selection
 
-Now let's get the user's state selection from the dropdown. Eventually this will change content on the screen, so we know we need to store it as a piece of state. We also know the state will change in the dropdown component, but the change will be in the map component. So we need to define the state in the parent of the two components, so the two can communicate with each other via the parent.
+Now let's get the user's state selection from the dropdown. Eventually, this will change content on the screen. That should clue is in that we need to store it as a piece of state. We also know that when the state changes in the dropdown component, we need to see a change in the map component. This tells us we need to define the piece state in the parent of the two components, so the two can communicate with each other via the parent.
 
-In `App.jsx`, we'll import `useState` at the top: `import { useState } from "react";`. Then, at the top of the App function, we'll define our piece of state: `const [selectedState, setSelectedState] = useState(null)`. We'll start with nothing selected (null default). Then we'll pass the state into the dropdown component. We'll pass the `selectedState` in a prop called `value`.
+In `App.jsx`:
+- We'll import `useState` at the top: `import { useState } from "react";`. 
+- At the top of the App function, we'll define our piece of state: `const [selectedState, setSelectedState] = useState("")`. 
+- We'll start with nothing selected (empty string default). 
+- We'll pass the `selectedState` in a prop called `value`.
+- We'll pass the setter function in a prop called `onChange`.
 
 `App.jsx`:
 ```jsx
@@ -829,14 +868,13 @@ import states from './data/mex-states.json';
 import Dropdown from "./components/Dropdown";
 
 function App(){
-    const [selectedState, setSelectedState] = useState('')
+    const [selectedState, setSelectedState] = useState("")
 
     return <div id="page-wrapper">
        <Dropdown
            options={states}
            id="state"
            value={selectedState}
-           onChange={setSelectedState}
        />
        <Map />
     </div>
@@ -844,38 +882,6 @@ function App(){
 
 export default App;
 ```
-
-Back in the dropdown component, we are going to receive the prop we just defined.
-
-
-
-At this point, when we change the value of the dropdown, we should see the numeric code appear in our developer console.
-
-![Show the state code](markdown-images/states-dropdown-6.png "A map with a dropdown showing Puebla selected and the code 21 in the console")
-
-### Use the Dropdown to Set a Filter
-
-We are ready to use the dropdown to filter content in the map layers. In order to do this, we need the Dropdown component to set the value of the `selectedState` state. We will need the App component to become aware of the change of state. And we will need the App component to pass the change down to the Map component, which will have to re-render in response to the user action.
-
-To do this, we will need to define an event handler in the App component and pass it down to the Dropdown. The Dropdown will have to activate the event handler in response to the user actions. And we will have to define a `useEffect` hook in the Map to change the appearance of the map in response to the change of state.
-
-First, we'll define a piece of state to keep track of the user's selection. In the App component, we'll import the `useState` hook and set a variable to keep track of it.
-
-`App.jsx`:
-```jsx
-import { useState } from "react";
-// ... other import statements
-
-function App(){
-    const [selectedState, setSelectedState] = useState("");
-
-   // ... rest of the App component
-}
-
-export default App;
-```
-
-We'll start out with no set default, passing an empty string to the `useState` function.
 
 Next, we'll create our event handler:
 
@@ -911,8 +917,6 @@ Now we can pass the piece of state and the event handler down to the Dropdown co
 //...
 ```
 
-The Dropdown component will receive the handler as a prop called `onChange`, and will also receive the piece of state containing the user's selection.
-
 In the Dropdown component, we'll receive the props we passed down from the App component:
 
 `Dropdown.jsx`:
@@ -932,27 +936,31 @@ Then we will use these to set the `select` element's `onChange` and `value` attr
         >
 ```
 
-With these attributes set, whenever the selected dropdown option changes, it will trigger the event handler. Since the event handler is defined in the App component, the App component will become aware of the user's selection and will be able to pass it down to the Map component.
+At this point, when we change the value of the dropdown, we should see the numeric code appear in our developer console. The  `handleChange` function is defined in the App component and passed down to the Dropdown component. When there is a change in the dropdown value, the `onChange` event will trigger the `handleChange` function, which will `setSelectedState` to the value of the selected option.
 
-Now we can pass the user's selection down to the Map component:
+![Show the state code](markdown-images/states-dropdown-6.png "A map with a dropdown showing Puebla selected and the code 21 in the console")
+
+### Use the Dropdown to Set a Filter
+
+We are ready to use the dropdown to filter content in the map layers. The Dropdown component already sets the value of the `selectedState`, and since the handler function is defined in the dropdown's parent, `App`, it can be passed down to any of `App`'s children, including `Map`. We just need to pass the change down to the Map component, so it can re-render in response to the user action.
 
 `App.jsx`:
 ```jsx
 <Map selectedState={selectedState} />
 ```
 
-Finally, we receive that prop in the Map component and use it to trigger a `useEffect`.
+Then, we receive that prop in the Map component and use it to trigger a `useEffect`.
 
 `Map.jsx`:
 ```jsx
 //... import statements
 
-function Map({ selectedState }){
+function Map({ selectedState }) {
 
 //.. mapRefs and first useEffect
 
 
-useEffect(() => {
+    useEffect(() => {
         if (!mapRef.current) return;
         if (!mapRef.current.getLayer('municipal-limits')) return;
         if (!mapRef.current.getLayer('municipal-labels')) return;
@@ -968,11 +976,14 @@ useEffect(() => {
         );
 
     }, [selectedState]);
+
+// ... rest of Map function
+}
 ```
 
-This `useEffect` will run whenever the `selectedState` changes. It first checks to make sure the map exists and the layers we intend to filter exist. Then it retrieves the `cve_ent` code from the layer data and checks that it matches the value of the selected option. It will filter out anything that does not equal that value. This follows [Mapbox filter expression syntax](https://docs.mapbox.com/style-spec/reference/expressions/).
+This `useEffect` will run whenever the `selectedState` changes. It first checks to make sure the map exists and the layers we intend to filter exist. Then it retrieves the `cve_ent` code from the layer data and checks that it matches the value of the selected option. It will filter out anything that does not equal that value. This follows [Mapbox data expression syntax](https://docs.mapbox.com/style-spec/reference/expressions/), which can be used for layer filter properties, as well as for many paint and layout properties.
 
-### Centering on the selected state
+### Centering on the Selected State
 
 Now we are going to ensure that the map centers on the user's selected state each time the selection changes. We're going to use Python to generate the data we need from a geojson file we already have.
 
@@ -999,7 +1010,7 @@ with open("state-bounds.json", "w", encoding="utf-8") as f:
     json.dump(bounds_dict, f, indent=2)
 ```
 
-Back in the Map component, import the data: `import state_bounds from '../data/state-bounds.json';`. Then we will add a few lines to the `useEffect` hook that also sets the filters:
+Back in the Map component, import the data: `import state_bounds from '../data/state-bounds.json';`. Then we will add a few lines to the same `useEffect` hook that sets the filters:
 
 `Map.jsx`:
 ```jsx
@@ -1165,15 +1176,15 @@ export default Map;
 
 ## Create Population Choropleths
 
-With the basic map functionality in place, we are ready to add some data and use the map to display it. We are going to show the top ten Indigenous groups by population in each state, and display the population of each group by municipality, with a color code to show the variation in population across municipalities.
+With the basic map functionality in place, we're ready to add some data and use the map to display it. We'll show the top ten Indigenous groups by population in each state, and display the population of each group by municipality, with a color code to show the variation in population across municipalities.
 
 ## Get and Shape the Data
 
-We will get the data from the [website of the former Mexican Council for Humanities, Sciences, and Technology](https://cultura.conahcyt.mx/pueblosindigenas/) (CONAHCYT). The Council has since been folded into the newer agency SECIHTI, the Secreatariat for Scinece, Humanities, Technology, and Innovation, but the older CONAHCYT website is still available.
+We'll get the data from the [website of the former Mexican Council for Humanities, Sciences, and Technology](https://cultura.conahcyt.mx/pueblosindigenas/) (CONAHCYT). The Council has since been folded into a new agency called SECIHTI, the Secreatariat for Science, Humanities, Technology, and Innovation, but the older CONAHCYT website is still available.
 
-On the page linked above, near the top, you will see a map entitled "Pueblos indígenas y su contexto", with a blue button labeled "Descargar datos". Clicking on that link will download the source data for the map, a file called `pueblos_indigenas_contexto.zip`. Unzip the file and you will see three folders: one for layers, one for tables, and one for metadata. We will use the layer file called `pciaf_pob_indigena_residentes_20_loc_p.geojson`.
+On the page linked above, near the top, there is a map called "Pueblos indígenas y su contexto", with a blue button labeled "Descargar datos". Clicking on that link will download the source data for the map, a file called `pueblos_indigenas_contexto.zip`. When the file is unzipped, we will see three folders: one for layers, one for tables, and one for metadata. We'll use the layer file called `pciaf_pob_indigena_residentes_20_loc_p.geojson`.
 
-We're going to go back to our Python notebook for a while. It may be helpful to start a new notebook so we don't have stale variables hanging around. Our first task will ge to load the new JSON file. We'll also need data from our existing `muni-limits.json` file. In this example, the source file for Indigenous population has been renamed to have a `.json` file ending.
+We're going to go back to our Python notebook for a while. It may be helpful to start a new notebook so we don't have stale variables hanging around. Our first task will be to load the new JSON file. We'll also need data from our existing `muni-limits.json` file. In this example, the source file for Indigenous population has been renamed to have a `.json` file ending.
 
 ```python
 import geopandas as gpd
@@ -1182,7 +1193,7 @@ gdf = gpd.read_file('pciaf_pob_indigena_residentes_20_loc_p.json')
 municipios = gpd.read_file('muni-limits.json')
 ```
 
-In the source data, Indigenous population is broken down by *localidad*, which is one step more granular than *municipio*. Our first step will be to use geopandas to group the data by municipio instead of localidad, so we can find the total population by municipio.
+In the source data, Indigenous population is broken down by *localidad*, which is one step smaller than *municipio*. Our first step will be to use geopandas to group the data by municipio instead of localidad, so we can find the total population by municipio.
 
 ```python
 df = (
@@ -1195,7 +1206,7 @@ df = (
 )
 ```
 
-We are going to visualize the population of each Indigenous group by showing colors with different opacities, with the darkest representing higher population, and the lightest showing the least population. As our baseline for 100% opacity, we'll select the municipio in each state that has the highest population of any given group. Other opacities will be represented as percentages of that baseline. To this end, we have to find the municipio with the highest population of each group in each state, and record that population number.
+We're going to visualize the population of each Indigenous group by showing colors with different opacities, with the darker representing higher populations, and lighter showing lower populations. As our baseline for 100% opacity, we'll select the municipio in each state that has the highest population of any given group. Other opacities will be represented as percentages of that baseline. To do this, we need to find the municipio with the highest population of each group in each state.
 
 ```python
 group_max = (
@@ -1224,7 +1235,7 @@ df["pct_max"] = (
 )
 ```
 
-Finally, we'll create a new JSON file that has the Indigenous population data merged with our GeoJSON file of municipal boundaries.
+Finally, we'll create a new JSON file that has the Indigenous population data merged with our GeoJSON file of municipal boundaries. We could also merge it back into our existing municipal limits file, but in this case we'll create a new file.
 
 ```python
 merged = municipios.merge(
@@ -1240,7 +1251,7 @@ We'll make sure this file is in our project's `src/data` directory.
 
 ![Place the file in the data directory](markdown-images/choropleths-1.png "The file with Mexican Indigenous population by municipio in the data directory")
 
-For this project, we will only show ten Indigenous groups for each state. For each state, we'll calculate the ten groups with the highest population in that state. First we'll create a data frame with the totals for each group.
+For this project, we'll only show ten Indigenous groups for each state. For each state, we'll calculate the ten groups with the highest population in that state. First we'll create a data frame with the totals for each group.
 
 ```python
 group_totals = (
@@ -1256,7 +1267,7 @@ To make it easier to shape the data the way we want, we'll drop the default data
 group_totals = group_totals.reset_index(drop=True)
 ```
 
-Now we'll create a Python dictionary with each state's ten Indigenous groups with the highest population. We are going to force the municipio codes to be strings, since this is how they are currently formated in our application. The result will be a JSON-compatible data structure that JavaScript can read as an object.
+Now we'll create a Python dictionary with each state's ten Indigenous groups with the highest population. We're going to force the municipio codes to be strings, since this is how they are currently formated in our application. The result will be a JSON-compatible data structure that JavaScript can read as an object.
 
 ```python
 top_ten_per_state = {}
@@ -1311,11 +1322,11 @@ Ensure that the resulting file is in our data directory.
 
 Now, every time the user selects a state, we want to show a second dropdown offering a selection of Indigenous groups. Eventually, the map will change its display depending on the group selected. For now, let's get the dropdown showing correctly.
 
-We'll start by importing the data we will use to generate our dropdown: the lists of the ten groups in each state that we will show data for. At the top, with all the other import statements, we'll add: `import groupsByState from './data/state-groups.json';`. This will bring in our JSON as a variable called `groupsByState`.
+We'll start by importing the data that we'll use to generate our dropdown. At the top, with all the other import statements, we'll add: `import groupsByState from './data/state-groups.json';`. This will bring in our JSON as a variable called `groupsByState`.
 
 Then we'll set up a piece of state to track the groups that are currently selected. These consist of groups for a given state, so we can call it `stateGroups`. Our initial state will be an empty array: `const [stateGroups, setStateGroups] = useState([]);`.
 
-Now, every time a new state is selected, we need to change the groups that are selected. This means we need a `useEffect` set to trigger every time the `selectedState` piece of state changes. First we need to import `useEffect`, since we are not currently using it in our `App.jsx`: `import { useState, useEffect } from "react";`.
+Now, every time a new state is selected, we need to change the groups that are selected. This means we need a `useEffect` that will be triggered every time the `selectedState` piece of state changes. We'll start by importing `useEffect`, since we are not currently using it in our `App.jsx`: `import { useState, useEffect } from "react";`.
 
 Now we can write our `useEffect`:
 
@@ -1332,15 +1343,15 @@ useEffect(() => {
         }, [selectedState]);
 ```
 
-We know that `selectedState` is a Mexican geographic code representing a state, and that it is a string. In our `state-groups.json` file, we used the corresponding codes as the keys for each list. So we can retrieve the list of groups corresponding to our selected state with `const groups = groupsByState[selectedState] || [];`, leaving an empty array as a failsafe in case the code is an error and does not retrieve anything.
+We know that `selectedState` is a Mexican geographic code representing a state, and that it is a string. In our `state-groups.json` file, we used the corresponding codes as the keys for each list. So we can retrieve the list of groups corresponding to our selected state with `const groups = groupsByState[selectedState] || [];`, leaving an empty array as the failsafe in case the code is an error and does not retrieve anything.
 
-Then, we loop over the groups in the appropriate list. The only change we make is we add an `active` property. Initially, we set its value to the expression `i === 0`, which means for the first element in the list it will be set to true, and for all the rest it will be set to false. Later, this will change when the user makes selections from the dropdown, and we will use the `active: true` property to decide what data to display on the map.
+Then, we loop over the groups in the appropriate list. The only change we make is to add an `active` property. Initially, we set its value to the expression `i === 0`, which means for the first element in the list it will be set to true, and for all the rest, it will be set to false. Later, this will change when the user makes selections from the dropdown, and we will use the `active: true` property to decide what data to display on the map.
 
 Finally, we set the `stateGroups` piece of state to the new value. We set this hook to run every time a new state is selected.
 
 In our `handleChange` event handler, we can now remove the console log, which no longer serves any purpose.
 
-Now we can add a second instance of our Dropdown component. We are going to need to arrange them together, so we'll wrap them in a div.
+Now we can add a second instance of our Dropdown component. We're going to need to arrange them together, so we'll wrap them in a div.
 
 ```jsx
 <div id="dropdowns">
@@ -1355,7 +1366,7 @@ Now we can add a second instance of our Dropdown component. We are going to need
 </div>
 ```
 
-Our second dropdown should only show up after the user has selected a state, so we will make its visibility dependent on a truthy value for `selectedState`.
+Our second dropdown should only show up after the user has selected a state, so we'll make its visibility dependent on a truthy value for `selectedState`.
 
 ```jsx
  {selectedState && <Dropdown
@@ -1394,7 +1405,7 @@ const handleGroupChange = e => {
     }
 ```
 
-Here, we are using React's built-in `prev` variable to grab the previous list, that is, the currently selected list. Then we will go through it and alter the group that has the `active: true` property set and return the new list.
+Here, we're using React's built-in `prev` variable to grab the previous list, that is, the currently selected list. Then we go through the list and change which group has the `active: true` property, then return the new list.
 
 We can now pass that handler to our second Dropdown component:
 
@@ -1407,7 +1418,7 @@ We can now pass that handler to our second Dropdown component:
            />}
 ```
 
-With all this done, the second dropdown will now appear when a state is selected, and it will be populated with the correct list of groups.
+With all this done, the second dropdown will appear when a state is selected, and it will be populated with the correct list of groups.
 
 Here is the current state of our `App.jsx` file:
 
@@ -1470,7 +1481,7 @@ function App(){
 export default App;
 ```
 
-There is a problem though. The style that we applied when we had only one dropdown is causing both dropdowns to appear in the same place. This is the absolute positioning we applied. We now have to revise the style sheets a bit to display the dropdowns properly.
+We now have a presentation problem. The absolute positioning style that we applied to our first dropdown is now causing both dropdowns to appear in the same place. We need to revise the style sheets a bit to display the dropdowns properly.
 
 ### Revise Dropdown Styles
 
