@@ -29,6 +29,10 @@ This project is based on Mapbox's tutorial on [using checkboxes to toggle layers
   - [Get and Shape the Data](#get-and-shape-the-data) 
   - [Revise Dropdown Styles](#revise-dropdown-styles)
   - [Display the Choropleths](#display-the-choropleths)
+- [Informational Popups](#informational-popups)
+  - [Set Up the Event Handlers](#set-up-the-event-handlers)
+  - [Set Up the Popup Component](#set-up-the-popup-component)
+  - [Adding Popup Content](#adding-popup-content)
 
 ## Start a React Project
 
