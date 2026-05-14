@@ -28,6 +28,7 @@ This project is based on Mapbox's tutorial on [using checkboxes to toggle layers
 - [Create Population Choropleths](#create-population-choropleths)
   - [Get and Shape the Data](#get-and-shape-the-data) 
   - [Revise Dropdown Styles](#revise-dropdown-styles)
+  - [Display the Choropleths](#display-the-choropleths)
 
 ## Start a React Project
 
@@ -1485,7 +1486,7 @@ We now have a presentation problem. The absolute positioning style that we appli
 
 ### Revise Dropdown Styles
 
-First we are going to use the `#dropdowns` div that we created earlier. We will take the absolute positioning formerly applied to the individual Dropdown component, and we'll move it to this wrapper div. This way the dropdowns will stop overlapping.
+We're going to target the `#dropdowns` div that we created earlier. We'll take the absolute positioning, which we had applied to the individual Dropdown component, and we'll move it instead to this wrapper div. That way, the dropdowns will stop overlapping.
 
 `App.css`:
 ```css
@@ -1500,9 +1501,9 @@ First we are going to use the `#dropdowns` div that we created earlier. We will 
 }
 ```
 
-In addition to transferring the positioning rule, we're making this wrapper element a flex parent and directing its children to appear in column layout with a gap of 0.7 rem between them.
+We're also making this wrapper element a flex parent and directing its children to appear in column layout with a gap of 0.7 rem between them.
 
-Next we will need to add a wrapper to our `select` elements in order to avoid issues with our custom dropdown arrow. Currently, the position of that arrow is pinned to the `select-and-label` div that wraps the `label` and `select` elements together and acts as their flex parents. The problem with this is that now, both `select-and-label` divs will be flex children of the `#dropdowns` div. This will make them occupy the same width. But the dropdown `select` elements themselves will have the width of their widest options. This will give them different widths, but the arrows will occupy the same position for both since they are pinned to the wrapper, not the dropdown itself. One of them will be inside its dropdown, the other one will just appear to hang outside. To avoid this, we'll pin the arrow to this new wrapper div.
+Next we'll add a wrapper to our `select` elements to help us position our custom dropdown arrows. Right now, that arrow's position is tied to the `select-and-label` div that wraps the `label` and `select` elements. The problem is, now both `select-and-label` divs will be flex children of the `#dropdowns` div. This will make them take up the same width. But the dropdowns themselves will have the width of their widest options. This means the two dropdowns will have different widths. But the arrows are pinned to the wrapper, not the dropdown, so they will both occupy the same horizontal position. One of them will be inside its dropdown, the other one will appear hang out wide to the right. To avoid this, we'll tie the arrow to this new wrapper div.
 
 `Dropdown.jsx`:
 ```jsx
@@ -1511,7 +1512,7 @@ Next we will need to add a wrapper to our `select` elements in order to avoid is
 </div>
 ```
 
-With this in place, we can revise our `Dropdown.css` style sheet.
+With this in place, we can revise our `Dropdown.css`.
 
 First, remove the absolute positioning from the `.select-and-label` class, since we've moved this over to the `#dropdowns` element in the App component. We can also add a `gap` property to better customize the distance between the label and the dropdown.
 
@@ -1528,7 +1529,7 @@ First, remove the absolute positioning from the `.select-and-label` class, since
 }
 ```
 
-With this change, the two dropdowns should be visible instead of overlapping. But the dropdown arrow is incorrectly positioned. We'll give the `select-wrapper` class relative positioning, so that the pseudo-element will be positioned absolutely in relation to its wrapper.
+With this change, the two dropdowns should be visible instead of overlapping. But the dropdown arrow is incorrectly positioned. We'll give the `select-wrapper` class relative positioning, so the pseudo-element will be positioned absolutely in relation to its wrapper.
 css
 ```
 .select-wrapper {
@@ -1536,7 +1537,7 @@ css
 }
 ```
 
-Finally, we move the pseudo-element off of the `select-and-label` class and onto the `select-wrapper` class and alter its position slightly:
+Finally, we move the pseudo-element out of the `select-and-label` class and onto the `select-wrapper` class, and alter its position rules:
 
 ```css
 .select-wrapper::after {
@@ -1555,7 +1556,7 @@ Finally, we move the pseudo-element off of the `select-and-label` class and onto
 
 The dropdowns are now appearing correctly, and their custom arrows are correctly positioned.
 
-We can also pause to make a little adjustment to the labels, since they can sometimes be hard to see when they overlap map labels. We can give them a light background.
+We can also make a little adjustment to the labels, since they can sometimes be hard to see when they overlap map labels. We can give them a light background.
 
 ```css
 label {
@@ -1570,14 +1571,14 @@ We're finally ready to receive the user's group selection and display the corres
 
 ### Display the Choropleths
 
-The first thing we need to do is pass the new piece of state to the Map component.
+The first thing we need to do is pass the `stateGroups` piece of state to the Map component.
 
 `App.jsx`:
 ```jsx
 <Map selectedState={selectedState} groupList={stateGroups} />
 ```
 
-Remember, at any given moment the list of groups has ten groups, and each list will have a single group marked as active.
+Remember, at any given moment the list of groups has ten groups, and at any given state, the list has one marked `active`.
 
 In the Map component, we can receive the prop and retrieve the currently active group. We can create a console log to verify that it's working correctly.
 
@@ -1593,9 +1594,9 @@ function Map({ selectedState, groupList }){
     //.. rest of Map component
 ```
 
-Now, you should see the currently selected group in the console whenever a new state is selected or a new group is selected. It should be an object that contains the groups code and name, as well as an `active: true` property.
+Now, we can see the currently selected group in the console whenever a new state is selected or a new group is selected. It should be an object that contains the group's code and name, as well as an `active: true` property.
 
-Our next step is to retrieve the data and add it as a source in our map whenver the map loads. We can add this import statement: `import pop_data from '../data/mex-indig-pop.json';`. Then, inside the `mapRef.current.on('load', () => {` function, we can add another data source:
+Our next step is to retrieve the data and add it as a source in our map whenever the map loads. We can add this import statement: `import pop_data from '../data/mex-indig-pop.json';`. Then, inside the `mapRef.current.on('load', () => {` function, we can add another data source:
 
 ```jsx
 mapRef.current.addSource('population', {
@@ -1604,7 +1605,7 @@ mapRef.current.addSource('population', {
            });
 ```
 
-We're ready to add a layer that displays the population data with color codes. But we'll need to add a list of colors to use. We'll use this constant, which we can define in the App component, but outside the App function:
+We're ready to add a layer that displays the population data with color codes. But we'll need to add a list of colors to use. We can define an array of colors in the App component, but outside (above) the App function:
 
 ```jsx
 const COLORS = [
@@ -1614,7 +1615,7 @@ const COLORS = [
 ];
 ```
 
-In our `useEffect` hook, where we create the groups state, we can add a color property to each group.
+In our `useEffect` hook, where we create the "groups" state, we can add a color property to each group.
 
 ```jsx
 const newGroups = groups.map((group, i) => ({
@@ -1624,7 +1625,7 @@ const newGroups = groups.map((group, i) => ({
         }));
 ```
 
-You should now see a color code displayed with each console log, for example:
+We will now see a color code displayed with each console log, for example:
 
 ```js
 {
@@ -1635,13 +1636,20 @@ You should now see a color code displayed with each console log, for example:
 }
 ```
 
-Basing ourselves on our population source, we can now add a layer. We have previously seen line and symbol layers. Now we are encountering a third type of layer, the fill layer. There are many other [types of layers](https://docs.mapbox.com/style-spec/reference/layers/#type) including raster layers, circle layers, hillshade layers, heatmap layers, and various others.
+We can now add a layer. We have previously seen line and symbol layers. Now we'll add a third type of layer, the fill layer. There are many other [types of layers](https://docs.mapbox.com/style-spec/reference/layers/#type) including raster layers, circle layers, hillshade layers, heatmap layers, and various others.
 
-As a reminder, each type of layer has its own set of sub-properties. Layers have two sub-properties that determine the way their data is rendered, the layout and paint properties. In turn each type of layer has specific sub-properties to their layout and paint properties. A [fill layer](https://docs.mapbox.com/style-spec/reference/layers/#fill) renders polygons with custom paint properties.
+Remember, each type of layer has its own set of sub-properties. There are two sub-properties that determine the way layer data is rendered: the layout and paint properties. Each type of layer has specific sub-properties to their layout and paint properties. A [fill layer](https://docs.mapbox.com/style-spec/reference/layers/#fill) renders polygons with custom paint properties.
 
-The fill layer paint properties that interest us here are `fill-color` and `fill-opacity`. We will be using specific fill colors with different opacities. The [fill-opacity property](https://docs.mapbox.com/style-spec/reference/layers/#paint-fill-fill-opacity) accepts an [interpolate expression](https://docs.mapbox.com/style-spec/reference/expressions/#interpolate). Interpolations can be linear, exponential with specified bases, or cubic bezier. Here we are using a slightly exponential interpolation to create gradations between specified stop points representing percentages and based on the `pct_max` value we created earlier for each Indigenous population in each municipio.
+The fill layer paint properties that interest us here are `fill-color` and `fill-opacity`. We will be using specific fill colors with different opacities. The [fill-opacity property](https://docs.mapbox.com/style-spec/reference/layers/#paint-fill-fill-opacity) accepts an [interpolate expression](https://docs.mapbox.com/style-spec/reference/expressions/#interpolate). 
 
-Our startup We'll start it out with a transparent fill color since there is no active group selected when the map first loads. If we didn't do this, the default would be all-black fill for every municipio. We'll set the fill opacity later in a different `useEffect` hook when the user selects a state or a group from the dropdown.
+Interpolations can be 
+- linear
+- exponential (with specified bases) 
+- cubic bezier 
+
+Here we are using a slightly exponential interpolation to create gradations between specified stop points based on the `pct_max` valueσ we created earlier for each Indigenous population in each municipio.
+
+On map load, we'll have a transparent fill color since there is no active group selected yet. If we didn't have any selection at all, the default would be all-black fill for every municipio. We'll set fill opacity in a different `useEffect` hook when the user selects a state or a group from the dropdown.
 
 ```jsx
 mapRef.current.addLayer({
@@ -1692,13 +1700,13 @@ useEffect(()=>{
     }, [selectedState, groupList])
 ```
 
-We first include the usual failsafes so that the hook does not trigger if any of the required variables or layers are not present.
+We first include the usual failsafes so that the hook does has no effect unless the required variables or layers are not present.
 
 Next, we filter the population layer to match the user's selected state and groups.
 
 Finally, we customize the layer's paint property. We change its color to match the color set for that group when we created the layer configuration objects (in the `groupList` piece of state). Then we add an opacity property with an interpolation expression based on the pct_max property.
 
-We now have choropleths displaying showing the population of each Indigenous group in each municipio, in relation to the municipio in that state that has the largest population of that specific group.
+We now have choropleths showing the population of each Indigenous group in each municipio, in relation to the municipio in that state that has the largest population of that specific group.
 
 ![Show the choropleths](markdown-images/choropleths-3.png "A map of Oaxaca showing different populations of Zapotec people in different municipalities")
 
@@ -1708,7 +1716,7 @@ Our final component will be a popup that shows the actual population numbers whe
 
 ### Set Up the Event Handlers
 
-Let's see what kind of information we get from user interactions on our population layer polygons. Let's set up an event handler in our Map component. While we're at it we can do some cleanup: we dont need `console.log(activeGroup)` any more. We'll delete that, and right in its place put our handler:
+First, let's use the console to investigate what kind of information we could get when the user interacts with our population layer polygons. Let's set up an event handler in our Map component. We can also do some cleanup: we don't need `console.log(activeGroup)` any more. We'll delete that, and in its place put our handler:
 
 ```jsx
 const handlePolygonClick = e => {
@@ -1730,7 +1738,7 @@ const handlePolygonClick = e => {
 
 ![Examine the feature array element](markdown-images/popups-2.png "A Mapbox map with the console showing a feature element")
 
-We can see that this contains information from the source GeoJSON feature, as well as information on the Mapbox layer that is rendering the data. The feature object has a properties sub-property, and that properties object has data from our source GeoJSON, including the name of the municipio, the name of the Indigenous group, and the `pihogares`, which is the population of that group in that municipio.
+We can see that this contains information from the source GeoJSON feature, as well as information on the Mapbox layer that is rendering the data. The feature object has a properties sub-property, and that properties object has data from our source GeoJSON, including the name of the municipio, the name of the Indigenous group, and the `pihogares`, the group's population in that specific municipio.
 
 ```jsx
 const handlePolygonClick = e => {
@@ -1785,7 +1793,7 @@ function Popup(){
 export default Popup;
 ```
 
-Then, we will import it into our Map component. We'll set it as a child of our map container and pass it a reference to the map object. The import statement will be `import Popup from "./Popup";`. Then, instead of `return <div id="map-container" ref={mapContainerRef}></div>`, our JSX return will be:
+Then, we'll import it into our Map component. We'll set it as a child of our map container and pass it a reference to the map object. The import statement will be `import Popup from "./Popup";`. Then, instead of `return <div id="map-container" ref={mapContainerRef}></div>`, our JSX return will be:
 
 `Map.jsx`:
 ```jsx
@@ -1794,7 +1802,9 @@ return <div id="map-container" ref={mapContainerRef}>
     </div>
 ```
 
-Let's add a piece of state to contain current popup data, and pass that to the Popup component as well. We'll need to import `useState` since we haven't used it yet in the Map component: `import { useEffect, useRef, useState } from "react";`. Then, inside the Map function: `const [popupData, setPopupData] = useState(null);`. Now we can modify the click handler. In addition to the feature properties, we are going to need to get the longitude and latitude of the point clicked or hovered on. Without a coordinate specified, the popup does not appear on the map.
+Let's add a piece of state to contain current popup data, and pass that to the Popup component. We'll need to import `useState` since we haven't used it yet in the Map component: `import { useEffect, useRef, useState } from "react";`. Then, inside the Map function: `const [popupData, setPopupData] = useState(null);`. 
+
+Now we can modify the click handler. In addition to the feature properties, we are going to need to get the longitude and latitude of the point clicked or hovered on. Without a specified coordinate, the popup would not appear on the map.
 
 ```jsx
 const handlePolygonClick = e => {
@@ -1813,7 +1823,7 @@ return <div id="map-container" ref={mapContainerRef}>
     </div>
 ```
 
-Now we can modify the Popup component to show an actual Popup. First we are going to need the appropriate imports. We'll need a `useEffect` to trigger the popup to show when the popup data changes. We'll also need `useRef` to hold references to the popup and its container. Since popups are Mapbox objects, we'll need to import the Mapbox GL JS library. And we are going to use a ReactDOM portal as a way to hand over control of the popup to Mapbox, rather than controling its location ourselves.
+Now we can modify the Popup component to show an actual Popup. First we're going to need the appropriate imports. We'll need a `useEffect` to make popup show when the data changes. We'll also need `useRef` to hold references to the popup and its container. Since popups are Mapbox objects, we'll need to import the Mapbox GL JS library. And we're going to use a [ReactDOM portal](https://react.dev/reference/react-dom/createPortal) as a way to [hand control of the popup to Mapbox](https://react.dev/reference/react-dom/createPortal#rendering-react-components-into-non-react-dom-nodes), rather than controlling its location ourselves.
 
 `Popup.jsx`:
 ```jsx
@@ -1822,7 +1832,7 @@ import {createPortal} from "react-dom";
 import mapboxgl from "mapbox-gl";
 ```
 
-Now we will receive the map reference and popup data from the parent Map element. Then we'll create a reference to a new popup object. We'll also create a div to contain it (and eventually hand it over to Mapbox), and create a reference to that too.
+Now we'll receive the map reference and popup data from the parent Map element. Then we'll create a reference to a new popup object. We'll also create a div to contain it (and eventually hand over to Mapbox), and create a reference to that too.
 
 ```jsx
 function Popup({ popupData, mapRef }){
@@ -1840,11 +1850,11 @@ function Popup({ popupData, mapRef }){
 export default Popup;
 ```
 
-Next, we'll create our `useEffect` hook. First we'll make sure the effect does not run until there is a map reference. This will avoid any problems with asynchronous loads triggering the effect before the map reference exists. Then, we'll use object destructuring to get access to the coordinate data that we passed in from the Map component. Remember that this popup data is currently set in the click event handler.
+Next, we'll create our `useEffect` hook. First we'll make sure the effect does not run until there is a map reference. This will avoid any problems with asynchronous loads triggering the effect before the map reference exists. Then, we'll use object destructuring to get access to the coordinate data that we passed in from the Map component. Remember, this popup data is currently set in the click event handler.
 
-The next step is the most critical. We use [Mapbox Popup methods](https://docs.mapbox.com/mapbox-gl-js/api/markers/#popup) to set the location of the popup on the map (`.setLngLat`), to set the popup's content (`.setDOMContent`), and then add it to the map. Using `setDOMContent` instead of `setHTML` allows us to create the content elsewhere and just refer to it here, which is a bit cleaner, though slightly more complex.
+The next step is the most critical. We use [Mapbox Popup methods](https://docs.mapbox.com/mapbox-gl-js/api/markers/#popup) to set the location of the popup on the map (`.setLngLat`), to set the popup's content (`.setDOMContent`), and then add it to the map. Using `setDOMContent` instead of `setHTML` allows us to create the content separately and just refer to it here, which is a bit cleaner, though slightly more complex, than `setHTML`.
 
-We end with a usual `useEffect` cleanup function, and set the hook to run whenver there is a change in the map or in the popup data.
+We end with a usual `useEffect` cleanup function, and set the hook to run whenever there is a change in the map or in the popup data.
 
 ```jsx
 function Popup({ popupData, mapRef }){
@@ -1889,7 +1899,7 @@ return createPortal(
     );
 ```
 
-You should now see the popup whenver you click on the map.
+You should now see the popup whenever you click on the map.
 
 ![Show the popup](markdown-images/popups-5.png "A popup appearing on a map")
 
@@ -1917,8 +1927,8 @@ It's also best practice to add some defensive measures that will protect against
 
 ```jsx
  if (!popupData) {
-            popupRef.current.remove()
-            return
+            popupRef.current.remove();
+            return;
         }
 ```
 
@@ -1948,7 +1958,9 @@ We'll finish our project by setting the popup to follow the user's mouse movemen
        mapRef.current.on('mouseleave', 'population', handlePolygonMouseLeave);
 ```
 
-This will work well, but we can make one last improvement, moving the cleanup function to its own `useEffect`. Otherwise the popup vanishes and reappears every time the user moves the mouse, which creates a subtle flicker effect.
+![Show data in the popups](markdown-images/popups-6.png "A popup showing Indigenous population data for a municipality in Oaxaca")
+
+This will work well, but we can make one last improvement, moving the cleanup function to its own `useEffect`. Otherwise, the popup vanishes and reappears every time the user moves the mouse, which creates a subtle flicker effect.
 
 `Popup.jsx`:
 ```jsx
@@ -1974,9 +1986,9 @@ useEffect(() => {
     }, []);
 ```
 
-We could develop it much further, of course. We could refine the popup appearance, create a title and some information for the user, modify the appearance when the map first loads, test the mobile UX, improve the data pre-processing, refine the interpolation that generates the color curve, or explore other ways to generate a choropleth. But that's good for now!
+We could develop this much further, of course. We could refine the popup appearance, create a title and some information for the user, modify the appearance when the map first loads, test the mobile UX, improve the data pre-processing, refine the interpolation that generates the color curve, or explore other ways to generate a choropleth. But that's good for now!
 
-This project demonstrated how to create a React app, how to bring in a Mapbox map, how to add data to the map, how to use layers to visualize the data, and how to add popups to display the data.
+This project demonstrated how to create a React app, how to bring in a Mapbox map, how to add data to the map, how to use layers to visualize the data, and how to add popups to display data.
 
 
 
