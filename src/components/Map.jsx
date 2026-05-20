@@ -23,6 +23,8 @@ function Map({ selectedState, groupList }) {
     }
 
     const handlePolygonMouseMove = e => {
+        if (!selectedState) return;
+
         setPopupData({
             lngLat: e.lngLat,
             properties: e.features[0].properties

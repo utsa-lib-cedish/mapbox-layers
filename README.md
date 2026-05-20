@@ -33,6 +33,8 @@ This project is based on Mapbox's tutorial on [using checkboxes to toggle layers
   - [Set Up the Event Handlers](#set-up-the-event-handlers)
   - [Set Up the Popup Component](#set-up-the-popup-component)
   - [Adding Popup Content](#adding-popup-content)
+- [Add an Informational Modal](#add-an-informational-modal)
+- [A Final Detail](#a-final-detail)
 
 ## Start a React Project
 
@@ -2242,7 +2244,23 @@ We are now ready to add some helpful content and a few more style rules to handl
 
 The button doesn't really do anything, but it's good UX in case the user is confused about how to make the modal disappear.
 
-We could develop this much further, of course. We could refine the popup appearance, create a title and some information for the user, modify the appearance when the map first loads, test the mobile UX, improve the data pre-processing, refine the interpolation that generates the color curve, or explore other ways to generate a choropleth. But that's good for now!
+## A Final Detail
+
+One irritating detail is that the population layer loads when the app first loads, and even before the user has selected a state, the user can hover over municipios and see data with no clear context. We can disable that by breaking out of the hover handler if there is no selected state yet.
+
+`Map.jsx`:
+```jsx
+const handlePolygonMouseMove = e => {
+  if (!selectedState) return;
+
+  setPopupData({
+    lngLat: e.lngLat,
+    properties: e.features[0].properties
+  });
+}
+```
+
+We could develop this much further, of course. We could refine the popup appearance, modify the appearance when the map first loads, test the mobile UX, improve the data pre-processing, refine the interpolation that generates the color curve, or explore other ways to generate a choropleth. But that's good for now!
 
 This project demonstrated how to create a React app, how to bring in a Mapbox map, how to add data to the map, how to use layers to visualize the data, and how to add popups to display data.
 
