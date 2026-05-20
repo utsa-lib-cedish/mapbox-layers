@@ -4,6 +4,7 @@ import './css/App.css';
 import states from './data/mex-states.json';
 import Dropdown from "./components/Dropdown";
 import groupsByState from './data/state-groups.json';
+import Modal from "./components/Modal";
 
 const COLORS = [
     "#8B4513", "#2E8B57", "#4169E1", "#D2691E",
@@ -14,6 +15,7 @@ const COLORS = [
 function App(){
     const [selectedState, setSelectedState] = useState("");
     const [stateGroups, setStateGroups] = useState([]);
+    const [showModal, setShowModal] = useState(true);
 
     useEffect(() => {
         const groups = groupsByState[selectedState] || [];
@@ -40,6 +42,10 @@ function App(){
         })));
     }
 
+    const handleModalClick = () => {
+        setShowModal(false);
+    }
+
     return <div id="page-wrapper">
        <div id="dropdowns">
            <Dropdown
@@ -56,6 +62,7 @@ function App(){
            />}
        </div>
        <Map selectedState={selectedState} groupList={stateGroups} />
+        {showModal && <Modal onClick={handleModalClick} />}
     </div>
 }
 

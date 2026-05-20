@@ -1989,6 +1989,258 @@ useEffect(() => {
         return () => popupRef.current.remove();
     }, []);
 ```
+## Add an Informational Modal
+
+The application currently has no information for the user on what it is or how to approach it. We could add a header, a sidebar, or an accordion section. A common approach is a modal that loads when the user first visits the application, and that is the technique we will apply.
+
+We'll be revisiting the ReactDOM portal technique we used for the popups. Our modal will have absolute positioning to make it occupy the entire screen. This will work only if it has no positioned ancestors, otherwise its absolute position will be relative to its closest positioned ancestor. To avoid this, we are going to use a portal to remove it from what would otherwise be its position in the React hierarchy.
+
+Let's first create our Modal component.
+
+`components/Modal.jsx`:
+```jsx
+function Modal () {
+  return (
+          <div className='modalWrapper'>
+            <div className='modalContent'>
+              I'm a modal!
+            </div>
+          </div>
+  )
+}
+
+export default Modal;
+```
+
+Here we are creating a modal wrapper div, which will be the hazy background covering the whole page. The modal wrapper contains a modal content div, which contains the actual readable content. The key to making this work is the style sheet. Let's work on that next.
+
+`css/Modal.css`:
+```css
+.modalWrapper {
+    position: absolute;
+    top: 0;
+    right: 0;
+    width: 100%;
+    height: 100%;
+    min-height: 100dvh;
+    
+    display: flex;
+    flex-flow: column nowrap;
+    align-items: center;
+    justify-content: center;
+    
+    background-color: rgba(241, 238, 235, 0.8);
+    z-index: 4;
+}
+
+.modalContent {
+    background-color: #f9f9f9;
+    width: auto;
+    height: auto;
+    padding: 1.5rem 3rem;
+    max-width: 90%;
+    z-index: 4;
+    font-family: "Helvetica Neue", Helvetica, Arial, sans-serif;
+}
+```
+
+Here we
+- Use absolute positioning for the modal background. 
+- This removes the modal from the typical flow of HTML content. 
+- The modal is positioned at the top right corner.
+- The modal is spread out over 100% of the width and height of the page.
+- We use flex positioning to make the modal content a flex child.
+- We use justify-content and align-items to place the content in the center of the viewport. 
+- We give it a grayish background color with an opacity of 80%.
+- We use z-index to make sure it appears to overlay the map content and popups.
+
+For the modal content:
+- We use width and height `auto` to make the white background adjust to the content
+- We use padding to ensure some space around the content
+- We give it a `max-width` of 90% so the content never completely covers the modal background.
+
+Now let's be sure to add the import statement for the CSS at the top of the Modal component:
+
+`Modal.jsx`:
+```jsx
+import '../css/Modal.css';
+```
+
+We can now import the modal into our App component and make it appear on the page. At the top of our App component, with the other imports, we can add: `import Modal from "./components/Modal";`. Then we can make the Modal appear:
+
+`App.jsx`:
+```jsx
+function App(){
+ // ... useEffects etc.
+  return <div id="page-wrapper">
+    {/*-- ... dropdown stuff */}
+    <Map selectedState={selectedState} groupList={stateGroups} />
+    <Modal />
+  </div>
+}
+```
+
+We should now see the modal when the content re-renders. It's not very functional yet, though. It should appear when the page first loads, then disappear if the user clicks anywhere on the page. In React, when we think of content changing depending on user actions, we should think of using the state system. So let's introduce a piece of state to control when the modal appears and disappears.
+
+`App.jsx`:
+```jsx
+// ... imports and color constant
+
+function App(){
+  const [selectedState, setSelectedState] = useState("");
+  const [stateGroups, setStateGroups] = useState([]);
+  const [showModal, setShowModal] = useState(true);
+
+ // ... useEffect and other event handlers
+
+  const handleModalClick = () => {
+    setShowModal(false);
+  }
+
+  return <div id="page-wrapper">
+    {/* Dropdown and Map components */}
+    {showModal && <Modal onClick={handleModalClick} />}
+  </div>
+}
+
+export default App;
+```
+
+Here, we are first introducing a `showModal` piece of state. We set it to `true` when the App component first renders, because we want the modal to show automatically whenever the page is visited. Then we create a handler to manage when a user clicks anywhere on the modal. It will set the `showModal` state to false.
+
+We wrap the Modal component in a `{showModal && ...}` expression. This means if `showModal` is true, the Modal will appear, but if it is false the expression will short-circuit and the modal won't render. 
+
+Finally, we pass the handler down to the modal component as a prop called `onClick`.
+
+Now, we'll pass the handler down to the modal component and set the modal wrapper div's `onClick` property to that handler.
+
+`Modal.jsx`:
+```jsx
+function Modal ( {onClick} ) {
+  return (
+          <div 
+                  onClick={onClick} 
+                  className='modalWrapper'
+          >
+            <div className='modalContent'>
+              I'm a modal!
+            </div>
+          </div>
+  )
+}
+```
+
+The modal now disappears when we click anywhere on the page.
+
+Although the basic functionality is there, it still only works accidentally, because the modal just happens not to have any positioned HTML ancestors. But if we ever introduce such an element, the modal won't work properly. So we'll use ReactDOM portal to future-proof our modal against that possibility. First, we'll go to our `index.html` page to insert a modal container div as a direct child of the `body` element.
+
+`index.html`:
+```html
+<body>
+    <div id="root"></div>
+    <div id="modal-container"></div>
+    <script type="module" src="/src/main.jsx"></script>
+</body>
+```
+
+Now we can return a portal instead of regular JSX in our Modal component:
+
+`Modal.jsx`:
+```jsx
+import '../css/Modal.css';
+import ReactDOM from "react-dom";
+
+function Modal ( {onClick} ) {
+    return ReactDOM.createPortal(
+        <div
+            onClick={onClick}
+            className='modalWrapper'
+        >
+            <div className='modalContent'>
+                I'm a modal!
+            </div>
+        </div>,
+        document.querySelector('#modal-container')
+    )
+}
+
+export default Modal;
+```
+
+We'll see no effect on the modal's behavior, but now the modal is being rendered in the `modal-container` div directly on the `index.html` page. It is removed from its position in the React component hierarchy. This means if we ever do change the hierarchy and add a `position` property to any element that is an ancestor of the modal component, the modal will still work propertly.
+
+We are now ready to add some helpful content and a few more style rules to handle it.
+
+`Modal.jsx`:
+```html
+ <div className='modalContent'>
+  <h2>Mexican Indigenous Population Explorer</h2>
+  <ul>
+    <li>Select a Mexican state from the dropdown</li>
+    <li>The map will zoom in to that state</li>
+    <li>A second dropdown will list the top ten Indigenous people by population in that state</li>
+    <li>Select a group to see a choropleth with the relative population in each municipality</li>
+    <li>Hover over a municipality to see the population statistic for that place</li>
+  </ul>
+  <button>OK</button>
+</div>
+```
+
+`Modal.css`:
+```css
+.modalWrapper {
+    position: absolute;
+    top: 0;
+    right: 0;
+    width: 100%;
+    height: 100%;
+    min-height: 100dvh;
+
+    display: flex;
+    flex-flow: column nowrap;
+    align-items: center;
+    justify-content: center;
+
+    background-color: rgba(241, 238, 235, 0.8);
+    z-index: 4;
+}
+
+.modalContent {
+    background-color: #f9f9f9;
+    width: auto;
+    height: auto;
+    padding: 1.5rem 3rem;
+    max-width: 90%;
+    z-index: 4;
+    font-family: "Helvetica Neue", Helvetica, Arial, sans-serif;
+
+    border-radius: 8px;
+    display: flex;
+    flex-flow: column nowrap;
+    align-items: center;
+    justify-content: center;
+    gap: 1rem;
+    overflow: scroll;
+}
+
+.modalContent ul {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    gap: 0.7rem;
+}
+
+.modalContent button {
+    padding: 0.5rem 1rem;
+    background-color: #4aac4a;
+    color: white;
+    cursor: pointer;
+    border: 1px solid green;
+    border-radius: 0.6rem;
+}
+```
+
+The button doesn't really do anything, but it's good UX in case the user is confused about how to make the modal disappear.
 
 We could develop this much further, of course. We could refine the popup appearance, create a title and some information for the user, modify the appearance when the map first loads, test the mobile UX, improve the data pre-processing, refine the interpolation that generates the color curve, or explore other ways to generate a choropleth. But that's good for now!
 
