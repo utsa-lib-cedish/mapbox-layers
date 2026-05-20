@@ -10,6 +10,11 @@ import Popup from "./Popup";
 function Map({ selectedState, groupList }) {
     const mapRef = useRef(null);
     const mapContainerRef = useRef(null);
+    const selectedStateRef = useRef(selectedState);
+
+    useEffect(() => {
+       selectedStateRef.current = selectedState;
+    }, [selectedState]);
 
     const [popupData, setPopupData] = useState(null);
 
@@ -23,8 +28,7 @@ function Map({ selectedState, groupList }) {
     }
 
     const handlePolygonMouseMove = e => {
-        if (!selectedState) return;
-
+        if (!selectedStateRef.current) return;
         setPopupData({
             lngLat: e.lngLat,
             properties: e.features[0].properties

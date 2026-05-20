@@ -2260,7 +2260,54 @@ const handlePolygonMouseMove = e => {
 }
 ```
 
-We could develop this much further, of course. We could refine the popup appearance, modify the appearance when the map first loads, test the mobile UX, improve the data pre-processing, refine the interpolation that generates the color curve, or explore other ways to generate a choropleth. But that's good for now!
+Unfortunately, we run into a subtle little React issue here. The handlers are defined in the component, but they are instantiated and attached to the map in the `useEffect`, at this point:
+
+```jsx
+ mapRef.current.on('mousemove', 'population', handlePolygonMouseMove);
+mapRef.current.on('mouseleave', 'population', handlePolygonMouseLeave);
+```
+
+That `useEffect` runs once, when the map first renders. At that time, the value of `selectedState` is an empty string. This means that from the event handler's perspective, `selectedState` is always an empty string, even when it's updated in the app. This in turn means the popups will now never appear.
+
+`useRef` to the rescue.
+
+`Map.jsx`:
+```jsx
+function Map({ selectedState, groupList }) {
+    const mapRef = useRef(null);
+    const mapContainerRef = useRef(null);
+    const selectedStateRef = useRef(selectedState);
+
+    useEffect(() => {
+        selectedStateRef.current = selectedState;
+    }, [selectedState]);
+
+    const [popupData, setPopupData] = useState(null);
+
+    const activeGroup = groupList.find(group => group.active);
+
+    const handlePolygonClick = e => {
+        setPopupData({
+            lngLat: e.lngLat,
+            properties: e.features[0].properties
+        });
+    }
+
+    const handlePolygonMouseMove = e => {
+        if (!selectedStateRef.current) return;
+        setPopupData({
+            lngLat: e.lngLat,
+            properties: e.features[0].properties
+        });
+    }
+// ... rest of component
+}
+```
+
+Here we set a reference to the selected state. Then we define a `useEffect` that updates the reference every time `selectedState` changes. Now, in the event handler, we look at the reference, and not directly at the value of `selectedState` itself. The reference is just a pointer to the value, so now instead of locking in on a single value, it locks in on the reference, which will update every time the value changes. Now the popup is blocked on first load, but appears whenever there is a selected state.
+
+
+We could develop this much further, of course. We could refine the popup appearance, modify the appearance when the map first loads, test the mobile UX, improve the data pre-processing, refine the interpolation that generates the color curve, explore other ways to generate a choropleth, and many othe improvements. But that's good for now!
 
 This project demonstrated how to create a React app, how to bring in a Mapbox map, how to add data to the map, how to use layers to visualize the data, and how to add popups to display data.
 
